@@ -1,0 +1,16 @@
+# 受保护的环境配置
+.env
+.env.*
+!.env.example
+
+# 真实代码与生成结果
+data/code/*
+!data/code/.gitkeep
+
+reports/*
+!reports/.gitkeep
+
+# 公共规范目录下仅保留占位文件
+standards/projects/*
+!standards/projects/.gitkeep
+.omo/

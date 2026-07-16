@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 import re
-import stat
 import subprocess
 from collections.abc import Mapping
 from configparser import ConfigParser, Error as ConfigParserError
@@ -11,7 +10,17 @@ from pathlib import Path
 from typing import Final
 from urllib.parse import urlsplit
 
-REPARSE_POINT: Final = stat.FILE_ATTRIBUTE_REPARSE_POINT
+from tools.path_safety import (
+    REPARSE_POINT,
+    SafetyError,
+    prepare_safe_parent,
+    project_target,
+    reject_reparse,
+    validate_root,
+    validate_safe_descendant,
+    validate_sync_path,
+)
+
 COMMAND_TIMEOUT_SECONDS: Final = 120
 ALLOWED_GIT_OPTIONS: Final = (
     (
@@ -31,12 +40,6 @@ ALLOWED_GIT_OPTIONS: Final = (
     ("remote", frozenset({"url", "fetch"})),
     ("branch", frozenset({"remote", "merge"})),
 )
-
-
-class SafetyError(Exception):
-    def __init__(self, message: str) -> None:
-        super().__init__(message)
-        self.message: Final = message
 
 
 class GitFailure(Exception):
@@ -132,6 +135,12 @@ def run_git(spec: CommandSpec, empty_hooks_path: Path) -> str:
 
 
 def url_identity(url: str) -> str:
+    invalid_character = any(
+        character.isspace() or ord(character) < 32 or ord(character) == 127
+        for character in url
+    )
+    if not url or invalid_character:
+        raise SafetyError("仓库 URL 格式无效。")
     try:
         parsed = urlsplit(url)
         parsed_port = parsed.port
@@ -150,72 +159,24 @@ def url_identity(url: str) -> str:
         port = f":{parsed_port}" if parsed_port is not None else ""
         path = parsed.path.lstrip("/").removesuffix(".git").rstrip("/")
         return f"{parsed.scheme.lower()}://{parsed.hostname.lower()}{port}/{path}"
-    scp = re.fullmatch(r"[^@\s]+@([^:\s]+):(.+)", url)
+    scp = re.fullmatch(
+        r"([A-Za-z0-9][A-Za-z0-9._-]{0,63})@"
+        r"([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+        r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*)"
+        r":([A-Za-z0-9._~/-]+)",
+        url,
+    )
     if scp:
-        return f"{scp.group(1).lower()}:{scp.group(2).removesuffix('.git').rstrip('/')}"
+        path = scp.group(3).removesuffix(".git").rstrip("/")
+        if path and not path.startswith("-") and all(
+            part not in {"", ".", ".."} for part in path.split("/")
+        ):
+            return f"{scp.group(1)}@{scp.group(2).lower()}:{path}"
     raise SafetyError("仓库 URL 格式无效。")
 
 
-def _is_reparse(path: Path) -> bool:
-    try:
-        metadata = os.lstat(path)
-    except FileNotFoundError:
-        return False
-    except OSError as error:
-        raise SafetyError("路径元数据无法安全读取。") from error
-    is_windows_reparse = os.name == "nt" and bool(
-        metadata.st_file_attributes & REPARSE_POINT
-    )
-    return stat.S_ISLNK(metadata.st_mode) or is_windows_reparse
-
-
-def _reject_reparse(path: Path) -> None:
-    if _is_reparse(path):
-        raise SafetyError("路径不得包含符号链接、junction 或 reparse point。")
-
-
-def validate_root(root: Path) -> None:
-    data_path = root.parent
-    repository = data_path.parent
-    _reject_reparse(repository)
-    _reject_reparse(data_path)
-    _reject_reparse(root)
-    if not repository.is_dir() or not data_path.is_dir() or not root.is_dir():
-        raise SafetyError("仓库内 data/code 路径必须是现有目录。")
-    try:
-        if repository.resolve(strict=True) != repository or root.resolve(strict=True) != root:
-            raise SafetyError("仓库内 data/code 路径不得通过别名解析。")
-    except OSError as error:
-        raise SafetyError("仓库内 data/code 路径无法安全解析。") from error
-
-
-def project_target(local_path: Path) -> Path:
-    _reject_reparse(local_path)
-    if local_path.exists() and not local_path.is_dir():
-        raise SafetyError("固定项目路径存在但不是目录。")
-    try:
-        target = local_path.resolve(strict=False)
-    except OSError as error:
-        raise SafetyError("固定项目路径无法安全解析。") from error
-    if target != local_path:
-        raise SafetyError("固定项目路径不得使用别名。")
-    return target
-
-
-def validate_sync_path(local_path: Path) -> None:
-    validate_root(local_path.parent)
-    _reject_reparse(local_path)
-    if local_path.exists() and not local_path.is_dir():
-        raise SafetyError("固定项目路径存在但不是目录。")
-    try:
-        if local_path.resolve(strict=False) != local_path:
-            raise SafetyError("同步路径不得通过别名解析。")
-    except OSError as error:
-        raise SafetyError("同步路径无法安全解析。") from error
-
-
 def _inspect_git_config(config: Path) -> None:
-    _reject_reparse(config)
+    reject_reparse(config)
     try:
         parser = ConfigParser(interpolation=None, strict=False)
         parser.read_string(config.read_text(encoding="utf-8"))
@@ -238,14 +199,14 @@ def _inspect_git_config(config: Path) -> None:
 
 def reject_unsafe_git_config(repository: Path) -> None:
     marker = repository / ".git"
-    _reject_reparse(marker)
+    reject_reparse(marker)
     try:
         if not marker.is_dir():
             raise SafetyError("本地 Git 元数据不是目录。")
         common_file = marker / "commondir"
         worktree_config = marker / "config.worktree"
-        _reject_reparse(common_file)
-        _reject_reparse(worktree_config)
+        reject_reparse(common_file)
+        reject_reparse(worktree_config)
         if common_file.exists() or worktree_config.exists():
             raise SafetyError("本地 Git 元数据包含未声明的 worktree 配置。")
     except OSError as error:

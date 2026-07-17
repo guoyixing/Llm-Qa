@@ -51,7 +51,7 @@
 
 - 文档头：可使用只包含 `<title>` 的 `<head>`；`<title>` 复用输入中的报告标题并执行文本转义。禁止 `<meta>`、远程引用和内嵌样式。
 - 外层：`margin:0; padding:0; background:#F3F1EC;`。
-- 主容器：`width:100%; max-width:720px;`，桌面端外边距 `24px auto`，内容内边距以 `32px` 为主。
+- 主容器：`width:100%; max-width:1000px;`，桌面端外边距 `24px auto`，内容内边距以 `32px` 为主。
 - `h1`：`28px`、`700`、`1.25` 行高，使用页眉中的白色文字，并用 `text-wrap:balance` 渐进增强标题平衡。
 - `h2`：`20px`、`700`、`1.35` 行高，顶部间距 `32px`，并用 `text-wrap:balance` 渐进增强标题平衡。
 - `h3`：`16px`、`700`、`1.4` 行高，并用 `text-wrap:pretty` 渐进增强中文断行。

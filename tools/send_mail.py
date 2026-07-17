@@ -5,33 +5,38 @@
 # ///
 
 # ─── 运行方法 ───
-# python tools/send_mail.py --list-users
-# python tools/send_mail.py --validate-user <id>
-# python tools/send_mail.py --resolve-user <git-email>
-# python tools/send_mail.py --send --user <id> \
-#   --markdown reports/daily/<日期>/<id>-code-review.md \
-#   --html reports/daily/<日期>/<id>-code-review.html
+# ./.venv/Scripts/python.exe tools/send_mail.py --list-users
+# ./.venv/Scripts/python.exe tools/send_mail.py --validate-user <id>
+# ./.venv/Scripts/python.exe tools/send_mail.py --resolve-user <git-email>
+# ./.venv/Scripts/python.exe tools/send_mail.py --send --user <id> --markdown reports/daily/<日期>/<id>-code-review.md --html reports/daily/<日期>/<id>-code-review.html
 # ──────────────────
 
 from __future__ import annotations
 
-import json, re, smtplib, ssl, sys
+import json, re, smtplib, ssl, subprocess, sys
 from collections.abc import Mapping, Sequence
 from datetime import date
 from email.message import EmailMessage
-from email.utils import parseaddr
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Final, Literal, NamedTuple, NewType, final
+from typing import Final, Literal, NamedTuple, final
 from urllib.parse import unquote, urlsplit
 
-UserId = NewType("UserId", str)
-EmailAddress = NewType("EmailAddress", str)
+if not __package__:
+    raise SystemExit(
+        subprocess.run(
+            [sys.executable, "-m", "tools.send_mail", *sys.argv[1:]],
+            cwd=Path(__file__).resolve().parent.parent,
+            check=False,
+        ).returncode,
+    )
+
+from . import user_identity
+
 DeliveryStatus = Literal["ACCEPTED", "REJECTED", "UNKNOWN"]
 ROOT: Final = Path(__file__).resolve().parent.parent
 DAILY_DIR: Final = ROOT / "reports" / "daily"
-USER_PATTERN: Final = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}")
-USER_KEY: Final = re.compile(r"USER_(\d+)_ID")
+USER_PATTERN: Final = user_identity.USER_ID_PATTERN
 CSS_REMOTE: Final = re.compile(r"(?:url|src|image|image-set|cross-fade|-webkit-image-set)\s*\(|@import\b|@namespace\b", re.IGNORECASE)
 BANNED_TAGS: Final = frozenset({"audio", "base", "embed", "form", "iframe", "image", "img", "link", "math", "meta", "object", "picture", "script", "source", "style", "svg", "track", "use", "video"})
 REMOTE_ATTRIBUTES: Final = frozenset({"action", "background", "codebase", "data", "formaction", "manifest", "ping", "poster", "src", "srcset"})
@@ -45,24 +50,18 @@ class MailError(Exception):
         self.code, self.message, self.exit_code = code, message, exit_code
 
 
-class User(NamedTuple):
-    user_id: UserId
-    git_email: EmailAddress
-    manager: EmailAddress | None
-
-
 class Smtp(NamedTuple):
     host: str
     port: int
     timeout: float
     username: str
     password: str
-    sender: EmailAddress
+    sender: user_identity.EmailAddress
     use_ssl: bool
 
 
 class Report(NamedTuple):
-    user_id: UserId
+    user_id: user_identity.UserId
     report_date: str
     subject: str
     html: str
@@ -143,32 +142,11 @@ def env() -> dict[str, str]:
     return values
 
 
-def email(raw: str) -> EmailAddress:
-    value = raw.strip()
-    display, address = parseaddr(value)
-    if not address or display or address != value or "@" not in address or any(char in value for char in "\r\n"): raise MailError("邮箱配置错误", "邮件地址配置无效")
-    return EmailAddress(address)
-
-
-def users(values: Mapping[str, str]) -> tuple[User, ...]:
-    indexes = sorted(match.group(1) for key in values if (match := USER_KEY.fullmatch(key)))
-    result: list[User] = []
-    seen: set[UserId] = set()
-    for index in indexes:
-        raw_id = values.get(f"USER_{index}_ID", "").strip()
-        user_id = UserId(raw_id)
-        if USER_PATTERN.fullmatch(raw_id) is None or user_id in seen: raise MailError("用户配置错误", "规范用户标识无效或重复")
-        manager = values.get(f"USER_{index}_LEADER_EMAIL", "").strip()
-        result.append(User(user_id, email(values.get(f"USER_{index}_GIT_EMAIL", "")), email(manager) if manager else None))
-        seen.add(user_id)
-    if not result: raise MailError("用户配置错误", "未配置任何用户")
-    return tuple(result)
-
-
-def find_user(raw: str, configured: tuple[User, ...]) -> User:
-    matches = tuple(user for user in configured if user.user_id == UserId(raw))
-    if USER_PATTERN.fullmatch(raw) is None or len(matches) != 1: raise MailError("用户不存在", "未找到唯一规范用户", 3)
-    return matches[0]
+def email(raw: str) -> user_identity.EmailAddress:
+    try:
+        return user_identity.parse_email(raw)
+    except user_identity.IdentityConfigError as error:
+        raise MailError(error.code, error.message, error.exit_code) from error
 
 
 def require(values: Mapping[str, str], key: str) -> str:
@@ -209,7 +187,7 @@ def controlled(raw: Path, maximum: int) -> Path:
 
 def report(raw_user: str, markdown_raw: Path, html_raw: Path) -> Report:
     if USER_PATTERN.fullmatch(raw_user) is None: raise MailError("用户无效", "CLI 用户标识无效", 3)
-    user_id = UserId(raw_user)
+    user_id = user_identity.UserId(raw_user)
     markdown, html = controlled(markdown_raw, 5 * 1024 * 1024), controlled(html_raw, 5 * 1024 * 1024)
     relative = markdown.parent.relative_to(DAILY_DIR)
     day = relative.parts[0] if len(relative.parts) == 1 else ""
@@ -230,14 +208,21 @@ def report(raw_user: str, markdown_raw: Path, html_raw: Path) -> Report:
     return Report(user_id, day, f"{day} {user_id} 代码质量审查日报", html_text)
 
 
-def recipient(user: User, values: Mapping[str, str]) -> EmailAddress:
+def recipient(
+    user: user_identity.User,
+    values: Mapping[str, str],
+) -> user_identity.EmailAddress:
     if user.manager is not None: return user.manager
     fallback = values.get("DEFAULT_LEADER_EMAIL", "").strip()
     if not fallback: raise MailError("无收件人", "未配置可用的领导收件人", 3)
     return email(fallback)
 
 
-def deliver(config: Smtp, target: EmailAddress, item: Report) -> DeliveryStatus:
+def deliver(
+    config: Smtp,
+    target: user_identity.EmailAddress,
+    item: Report,
+) -> DeliveryStatus:
     message = EmailMessage()
     message["Subject"], message["From"], message["To"] = item.subject, config.sender, target
     message.set_content(item.html, subtype="html", charset="utf-8")
@@ -272,10 +257,13 @@ def send_mode(args: Args) -> int:
     try:
         item = report(raw_user, markdown, html)
         values = env()
-        user = find_user(str(item.user_id), users(values))
+        user = user_identity.find_user(
+            str(item.user_id),
+            user_identity.parse_users(values),
+        )
         target = recipient(user, values)
         config = smtp(values)
-    except MailError as error:
+    except (user_identity.IdentityConfigError, MailError) as error:
         return respond({"status": f"投递前失败：{error.message}", "error_code": error.code}, error.exit_code)
     try:
         status = deliver(config, target, item)
@@ -291,25 +279,32 @@ def run() -> int:
     mode, raw_user, _, _ = args
     if mode == "send": return send_mode(args)
     try:
-        configured = users(env())
-    except MailError as error:
+        configured = user_identity.parse_users(env())
+    except user_identity.IdentityConfigError as error:
         status = "身份解析失败" if mode == "resolve" else "身份校验失败" if mode == "validate" else error.message
         return respond({"status": status, "error_code": "身份解析失败" if mode == "resolve" else error.code}, error.exit_code)
     if mode == "list": return respond({"user_ids": sorted(str(user.user_id) for user in configured)}, 0)
     if mode == "validate":
         try:
-            _ = find_user(raw_user or "", configured)
-        except MailError: return respond({"status": "INVALID", "error_code": "用户不存在"}, 3)
-        return respond({"status": "VALID"}, 0)
+            user = user_identity.find_user(raw_user or "", configured)
+        except user_identity.IdentityConfigError: return respond({"status": "INVALID", "error_code": "用户不存在"}, 3)
+        return respond({"status": "VALID", "user_name": str(user.user_name)}, 0)
     try:
-        target = email(raw_user or "")
+        target = user_identity.parse_email(raw_user or "")
         matches = tuple(user for user in configured if user.git_email.casefold() == target.casefold())
-    except MailError: matches = ()
+    except user_identity.IdentityConfigError: matches = ()
     if len(matches) != 1: return respond({"status": "身份解析失败", "error_code": "身份无法唯一解析"}, 3)
-    return respond({"user_id": str(matches[0].user_id)}, 0)
+    return respond({"user_id": str(matches[0].user_id), "user_name": str(matches[0].user_name)}, 0)
+
+
+def _configure_stdout_utf8() -> None:
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfigure):
+        _ = reconfigure(encoding="utf-8")
 
 
 def main() -> int:
+    _configure_stdout_utf8()
     try:
         return run()
     except MailError as error: return respond({"status": error.message, "error_code": error.code}, error.exit_code)

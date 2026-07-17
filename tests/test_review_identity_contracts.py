@@ -240,6 +240,22 @@ class ReviewIdentityContractTests(unittest.TestCase):
         for contract in (daily, manual, skill):
             self.assert_no_contradictory_identity_authorization(contract)
 
+    def test_authoritative_contract_defines_multiple_leader_routing(self) -> None:
+        # Given
+        contract = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+
+        # When / Then
+        required_clauses = (
+            "`USER_<n>_LEADER_EMAIL` 与 `DEFAULT_LEADER_EMAIL` 都接受以英文逗号分隔的一个或多个完整邮箱地址",
+            "空项、格式无效或大小写不敏感重复的地址必须使对应配置失败",
+            "无效专属领导列表只使对应用户投递前失败，不得阻断其他用户",
+            "同一用户的全部目标领导必须作为同一封邮件的 `To` 收件人",
+            "必须报告 `PARTIAL` 和中文“部分接受”",
+            "只有全部目标领导均被收件服务器接受时才能报告投递成功",
+        )
+        for clause in required_clauses:
+            self.assertIn(clause, contract)
+
     def test_review_surfaces_reject_contradictory_identity_authorization(self) -> None:
         # Given: every source paired with machine-boundary and legacy authorizations.
         mutations = tuple(

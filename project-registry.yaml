@@ -1,11 +1,11 @@
-# 示例默认禁用。启用前请替换全部示例值，并只填写受保护仓库 URL 的配置键名。
+# 仅登记项目数据和受保护仓库 URL 的配置键名。
 # 不得在本文件中填写仓库 URL、Token 或其他凭据。
 version: 1
 projects:
-  - project_id: non-production-example
-    name: "非生产示例项目（请替换）"
-    code_dir: data/code/non-production-example
-    standards_dir: standards/projects/non-production-example
-    default_branch: main
-    repository_url_config_key: PROJECT_NON_PRODUCTION_EXAMPLE_REPO_URL
-    enabled: false
+  - project_id: hisense-ids-app
+    name: "海信 IDS 应用"
+    code_dir: data/code/hisense-ids-app
+    standards_dir: standards/projects/hisense-ids-app
+    default_branch: projectDevGroup-specTemplate
+    repository_url_config_key: PROJECT_HISENSE_IDS_APP_REPO_URL
+    enabled: true

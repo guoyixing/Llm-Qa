@@ -1,0 +1,131 @@
+<html>
+<head><title>每日代码质量审查报告</title></head>
+<body style="margin:0; padding:0; background:#F3F1EC; color:#33413E; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif; font-size:15px; line-height:1.7;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; border-collapse:collapse; background:#F3F1EC;">
+    <tr>
+      <td align="center" style="padding:24px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:1000px; margin:24px auto; border:1px solid #D9DFDC; border-radius:12px; border-collapse:separate; border-spacing:0; background:#FFFFFF; box-shadow:0 4px 12px #D9DFDC;">
+          <tr>
+            <td style="padding:32px; border-top:4px solid #17211F; border-radius:12px 12px 0 0; background:#174F46;">
+              <header>
+                <h1 style="margin:0; color:#FFFFFF; font-size:28px; font-weight:700; line-height:1.25; text-wrap:balance;"><span style="white-space:nowrap;">每日代码</span><span style="white-space:nowrap;">质量审查报告</span></h1>
+              </header>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px; background:#FFFFFF; border-radius:0 0 12px 12px;">
+              <main>
+                <section>
+                  <h2 style="margin:0 0 16px; padding:0 0 8px 12px; border-left:4px solid #174F46; border-bottom:1px solid #D9DFDC; color:#17211F; font-size:20px; font-weight:700; line-height:1.35; text-wrap:balance;">审查身份与范围</h2>
+                  <ul style="margin:0; padding-left:24px; color:#33413E;">
+                    <li style="margin:0 0 8px;">用户：郭一行（guoyixing）</li>
+                    <li style="margin:0 0 8px;">报告日期：2026-07-16</li>
+                    <li style="margin:0 0 8px;">时区：<span style="overflow-wrap:anywhere; word-break:break-all;">Asia/Hong_Kong</span></li>
+                    <li style="margin:0 0 8px;">审查窗口：<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">2026-07-16 00:00:00 +08:00</code>（含）<span style="white-space:nowrap;">至 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">2026-07-17 00:00:00 +08:00</code></span>（不含）</li>
+                    <li style="margin:0 0 8px; text-wrap:pretty;">实际过滤条件：省略项目选择，使用全部有效且已启用项目；未指定 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">commit</code>、<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">branch</code>、<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">file</code> 或 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">directory</code> 过滤条件</li>
+                    <li style="margin:0; text-wrap:pretty;">审查依据：本次固定提交、可见补丁、公共规范与项目规范；未执行目标项目代码、测试、构建或静态分析器</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2 style="margin:32px 0 16px; padding:0 0 8px 12px; border-left:4px solid #174F46; border-bottom:1px solid #D9DFDC; color:#17211F; font-size:20px; font-weight:700; line-height:1.35; text-wrap:balance;">注册表快照与生效项目</h2>
+                  <ul style="margin:0 0 16px; padding-left:24px; color:#33413E;">
+                    <li style="margin:0 0 8px;">注册表：<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">project-registry.yaml</code></li>
+                    <li style="margin:0 0 8px;">版本：<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">1</code></li>
+                    <li style="margin:0 0 8px;">本次冻结摘要：<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">9d2e4c7cbf37603f1868fcfada2114a9fcd37795ea6e8ad981114115eb3e42b3</code></li>
+                    <li style="margin:0;">条目错误：无</li>
+                  </ul>
+                  <article style="margin:0; padding:16px; border:1px solid #D9DFDC; border-radius:8px; background:#FFFFFF;">
+                    <p style="margin:0; padding:8px 0; border-bottom:1px solid #E9EDEA;"><strong style="color:#17211F;">project_id：</strong><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">hisense-ids-app</code></p>
+                    <p style="margin:0; padding:8px 0; border-bottom:1px solid #E9EDEA;"><strong style="color:#17211F;">名称：</strong>海信 IDS 应用</p>
+                    <p style="margin:0; padding:8px 0; border-bottom:1px solid #E9EDEA;"><strong style="color:#17211F;">code_dir：</strong><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">data/code/hisense-ids-app</code></p>
+                    <p style="margin:0; padding:8px 0; border-bottom:1px solid #E9EDEA;"><strong style="color:#17211F;">standards_dir：</strong><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">standards/projects/hisense-ids-app</code></p>
+                    <p style="margin:0; padding:8px 0; border-bottom:1px solid #E9EDEA;"><strong style="color:#17211F;">default_branch：</strong><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">projectDevGroup-specTemplate</code></p>
+                    <p style="margin:0; padding:8px 0; border-bottom:1px solid #E9EDEA;"><strong style="color:#17211F;">repository_url_config_key：</strong><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">PROJECT_HISENSE_IDS_APP_REPO_URL</code></p>
+                    <p style="margin:0; padding:8px 0 0;"><strong style="color:#17211F;">enabled：</strong><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">true</code></p>
+                  </article>
+                </section>
+
+                <section>
+                  <h2 style="margin:32px 0 16px; padding:0 0 8px 12px; border-left:4px solid #174F46; border-bottom:1px solid #D9DFDC; color:#17211F; font-size:20px; font-weight:700; line-height:1.35; text-wrap:balance;">项目来源与实际提交</h2>
+                  <h3 style="margin:0 0 12px; color:#17211F; font-size:16px; font-weight:700; line-height:1.4; text-wrap:pretty;">hisense-ids-app</h3>
+                  <ul style="margin:0; padding-left:24px; color:#33413E;">
+                    <li style="margin:0 0 8px;">本次直接同步结果：可信成功</li>
+                    <li style="margin:0 0 8px;">本地来源：已注册受控工作区 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">data/code/hisense-ids-app</code></li>
+                    <li style="margin:0 0 8px;">固定来源提交：<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">7186a8b6d07a1f8e23dcbc58ffc2d5888929ffee</code></li>
+                    <li style="margin:0 0 8px;">同步说明：仓库已仅快进同步</li>
+                    <li style="margin:0 0 8px;">实际审查提交：
+                      <ul style="margin:8px 0 0; padding-left:24px;">
+                        <li style="margin:0 0 8px;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">42b8c3daf10d79f49b3ba46212ae729000f7972e</code></li>
+                        <li style="margin:0 0 8px;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">697ae7a5abef3a69161f100a43018bd3e0dc2092</code>（合并提交，隔离读取未显示独立补丁）</li>
+                        <li style="margin:0;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">3b0da226ddc381f4729d58156541e8206f3e5f22</code></li>
+                      </ul>
+                    </li>
+                    <li style="margin:0;">跳过：无</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2 style="margin:32px 0 16px; padding:0 0 8px 12px; border-left:4px solid #174F46; border-bottom:1px solid #D9DFDC; color:#17211F; font-size:20px; font-weight:700; line-height:1.35; text-wrap:balance;">汇总</h2>
+                  <table width="100%" cellspacing="0" cellpadding="0" style="width:100%; table-layout:fixed; border-collapse:collapse; border:1px solid #D9DFDC; background:#E8F1EE; font-variant-numeric:tabular-nums;">
+                    <tbody>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#17211F; text-align:left; font-weight:700;">审查项目数</th><td style="padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#33413E;">1</td></tr>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#17211F; text-align:left; font-weight:700;">审查提交数</th><td style="padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#33413E;">3</td></tr>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#17211F; text-align:left; font-weight:700;">发现总数</th><td style="padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#33413E;">1</td></tr>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#17211F; text-align:left; font-weight:700;">代码规范</th><td style="padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#33413E;">1</td></tr>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#17211F; text-align:left; font-weight:700;">可读性</th><td style="padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#33413E;">0</td></tr>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#17211F; text-align:left; font-weight:700;">健壮性</th><td style="padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#33413E;">0</td></tr>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#17211F; text-align:left; font-weight:700;">性能</th><td style="padding:8px 12px; border-bottom:1px solid #D9DFDC; color:#33413E;">0</td></tr>
+                      <tr><th scope="row" style="width:40%; padding:8px 12px; color:#17211F; text-align:left; font-weight:700;">严重级别</th><td style="padding:8px 12px; color:#33413E;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">LOW</code> 1 条</td></tr>
+                    </tbody>
+                  </table>
+                </section>
+
+                <section>
+                  <h2 style="margin:32px 0 16px; padding:0 0 8px 12px; border-left:4px solid #174F46; border-bottom:1px solid #D9DFDC; color:#17211F; font-size:20px; font-weight:700; line-height:1.35; text-wrap:balance;">发现</h2>
+                  <details open style="margin:0; padding:16px; border-left:4px solid #315A75; border-top:1px solid #D9DFDC; border-right:1px solid #D9DFDC; border-bottom:1px solid #D9DFDC; border-radius:8px; background:#EFF6FA; color:#33413E;">
+                    <summary style="color:#315A75; font-size:16px; font-weight:700; line-height:1.4; cursor:default; text-wrap:pretty; overflow-wrap:anywhere; word-break:break-all;">LOW · 1. 多值分隔符未复用项目统一常量 · hisense-app/src/main/java/com/glaway/masterdata/service/impl/MasterDataApiUpdateNewServiceImpl.java:457-463</summary>
+                    <dl style="margin:16px 0 0;">
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">项目：</dt>
+                      <dd style="margin:0;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">hisense-ids-app</code></dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">提交：</dt>
+                      <dd style="margin:0;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">42b8c3daf10d79f49b3ba46212ae729000f7972e</code></dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">类别：</dt>
+                      <dd style="margin:0;">代码规范</dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">严重级别：</dt>
+                      <dd style="margin:0;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; color:#315A75;">LOW</code></dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">文件与行范围：</dt>
+                      <dd style="margin:0;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">hisense-app/src/main/java/com/glaway/masterdata/service/impl/MasterDataApiUpdateNewServiceImpl.java:457-463</code></dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">规则与来源：</dt>
+                      <dd style="margin:0; text-wrap:pretty;"><code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">hisense-ids-app-ROBUST-006</code>，<code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">standards/projects/hisense-ids-app/robustness.md</code>；规格书映射值恢复多值时必须复用 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">AllConstantIndex.Separator</code>，不得硬编码分隔符</dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">代码证据：</dt>
+                      <dd style="margin:0; text-wrap:pretty;">新增的 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">buildUpdatedParam</code> 直接调用 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">attrUpdate.getAttrValue().split(&quot;#,#&quot;)</code>，而没有使用项目统一的 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">AllConstantIndex.Separator.MASTER_DATA_MULTI_VALUE</code></dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">问题说明：</dt>
+                      <dd style="margin:0; text-wrap:pretty;">同一多值协议出现常量与字符串字面量两个定义来源，新增路径没有跟随项目统一约束</dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">影响：</dt>
+                      <dd style="margin:0; text-wrap:pretty;">当前分隔符仍为 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">#,#</code> 时行为一致；若统一协议调整或其他路径只更新常量，本路径可能无法正确还原多值，并与创建路径产生不一致</dd>
+                      <dt style="margin:12px 0 0; color:#17211F; font-weight:700;">建议：</dt>
+                      <dd style="margin:0; text-wrap:pretty;">改用 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">AllConstantIndex.Separator.MASTER_DATA_MULTI_VALUE</code>，并通过 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">Pattern.quote(...)</code> 转义后再传给 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px;">split</code></dd>
+                    </dl>
+                  </details>
+                </section>
+
+                <section>
+                  <h2 style="margin:32px 0 16px; padding:0 0 8px 12px; border-left:4px solid #174F46; border-bottom:1px solid #D9DFDC; color:#17211F; font-size:20px; font-weight:700; line-height:1.35; text-wrap:balance;">失败与降级</h2>
+                  <div style="margin:0; padding:16px; border:1px solid #D9DFDC; border-radius:8px; background:#F5F7F6;">
+                    <ul style="margin:0; padding-left:24px; color:#33413E;">
+                      <li style="margin:0 0 8px; text-wrap:pretty;">注册表、项目同步、身份解析、规范读取和 Markdown 事实报告生成均无失败</li>
+                      <li style="margin:0 0 8px; text-wrap:pretty;">公共规范与项目规范无冲突；项目规范仅作细化，没有覆盖公共规则</li>
+                      <li style="margin:0; text-wrap:pretty;">合并提交 <code style="font-family:Consolas, 'Courier New', monospace; font-size:13px; overflow-wrap:anywhere; word-break:break-all;">697ae7a5abef3a69161f100a43018bd3e0dc2092</code> 未显示独立补丁，因此没有基于该提交生成独立发现</li>
+                    </ul>
+                  </div>
+                </section>
+              </main>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

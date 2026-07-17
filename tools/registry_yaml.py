@@ -35,7 +35,7 @@ class ParsedRegistry:
     projects: tuple[ParsedProject, ...]
 
 
-_PLAIN: Final = re.compile(r"[A-Za-z0-9._/: +()-]+\Z")
+_PLAIN: Final = re.compile(r"[-A-Za-z0-9._/: +()\\]+\Z")
 _KEY: Final = re.compile(r"[A-Za-z][A-Za-z0-9_-]*\Z")
 
 

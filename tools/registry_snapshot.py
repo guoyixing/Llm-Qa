@@ -43,7 +43,14 @@ def snapshot_json(registry: ProjectRegistry) -> str:
     return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
 
+def _configure_stdout_utf8() -> None:
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfigure):
+        reconfigure(encoding="utf-8")
+
+
 def main(arguments: Sequence[str] | None = None) -> int:
+    _configure_stdout_utf8()
     requested = tuple(sys.argv[1:] if arguments is None else arguments)
     if requested:
         print(_FAILURE)

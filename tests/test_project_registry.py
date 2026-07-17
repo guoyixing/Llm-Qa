@@ -69,7 +69,8 @@ class RegistryTestCase(unittest.TestCase):
 
     def test_load_reads_exact_bytes_once_and_returns_lowercase_sha256(self) -> None:
         text = registry_text(project_block())
-        self.write(text)
+        source = text.encode("utf-8")
+        self.path.write_bytes(source)
         original_read = Path.read_bytes
         reads = 0
 
@@ -82,7 +83,7 @@ class RegistryTestCase(unittest.TestCase):
             result = load_project_registry(self.path)
 
         self.assertEqual(reads, 1)
-        self.assertEqual(result.sha256, hashlib.sha256(text.encode("utf-8")).hexdigest())
+        self.assertEqual(result.sha256, hashlib.sha256(source).hexdigest())
         self.assertRegex(result.sha256, r"^[0-9a-f]{64}$")
 
     def test_digest_changes_when_only_comment_bytes_change(self) -> None:
@@ -159,6 +160,28 @@ class RegistryTestCase(unittest.TestCase):
         self.assertEqual(result.invalid_projects[0].project_id, "bad-id")
         self.assertGreaterEqual(len(result.invalid_projects[0].errors), 2)
 
+    def test_plain_backslash_code_dir_isolated_as_entry_error(self) -> None:
+        invalid = project_block(
+            "broken",
+            r"data\code\x",
+            "standards/projects/broken",
+            "PROJECT_BROKEN_REPO_URL",
+        )
+        valid = project_block(
+            "beta",
+            "data/code/beta",
+            "standards/projects/beta",
+            "PROJECT_BETA_REPO_URL",
+        )
+
+        result = load_project_registry(self.write(registry_text(invalid, valid)))
+
+        self.assertEqual(tuple(project.project_id for project in result.projects), ("beta",))
+        self.assertEqual(tuple(project.project_id for project in result.invalid_projects), ("broken",))
+        self.assertTrue(
+            any("code_dir" in error for error in result.invalid_projects[0].errors)
+        )
+
     def test_wrong_field_types_are_entry_errors(self) -> None:
         wrong = project_block(enabled="1").replace("name: Alpha Project", "name: true")
 
@@ -189,7 +212,7 @@ class RegistryTestCase(unittest.TestCase):
                 self.assertEqual(result.projects, ())
 
     def test_rejects_unsafe_paths_and_accepts_strict_descendants(self) -> None:
-        paths = ("data/code", "/data/code/x", "C:/data/code/x", "data\\code\\x", "data/code/./x", "data/code/../x", "data/code//x", "other/code/x")
+        paths = ("data/code", "/data/code/x", "C:/data/code/x", "data/code/./x", "data/code/../x", "data/code//x", "other/code/x")
         for unsafe in paths:
             with self.subTest(path=unsafe):
                 result = load_project_registry(self.write(registry_text(project_block(code_dir=unsafe))))
@@ -316,14 +339,17 @@ class RegistryTestCase(unittest.TestCase):
         self.assertEqual(exit_code, 2)
         self.assertEqual(output.getvalue(), '{"error":"项目注册表加载失败"}\n')
 
-    def test_repository_sample_is_valid_and_disabled(self) -> None:
+    def test_repository_sample_has_one_enabled_hisense_ids_app(self) -> None:
         root = Path(__file__).resolve().parents[1]
 
         registry = load_project_registry(root / "project-registry.yaml")
 
-        self.assertEqual(len(registry.projects), 1)
-        self.assertFalse(registry.projects[0].enabled)
-        self.assertEqual(select_projects(registry).projects, ())
+        self.assertEqual(
+            tuple(project.project_id for project in registry.projects),
+            ("hisense-ids-app",),
+        )
+        self.assertTrue(registry.projects[0].enabled)
+        self.assertEqual(select_projects(registry).projects, registry.projects)
         self.assertTrue(registry.projects[0].repository_url_config_key.startswith("PROJECT_"))
 
 

@@ -10,19 +10,22 @@ import json
 import re
 import sys
 from collections.abc import Mapping
-from dataclasses import dataclass
-from enum import IntEnum, StrEnum
+from enum import IntEnum
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Final, TypedDict
+from typing import Final
 
 REPOSITORY_ROOT: Final = Path(__file__).absolute().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from tools.project_registry import Project, RegistryError, load_project_registry, select_projects
-from tools.repository_config import ProtectedConfigError, parse_dotenv
+from tools.repository_config import (
+    ProtectedConfigError, RepositoryCredentialError,
+    credential_keys, parse_dotenv, repository_credentials,
+)
 from tools.sync_cli import ArgumentError, parse_arguments
+from tools.sync_models import ProjectConfig, ResultJson, Status, _success, failed
 from tools.sync_safety import (
     CommandSpec, GitFailure, SafetyError, prepare_safe_parent, reject_unsafe_git_config,
     run_git, url_identity, validate_root, validate_safe_descendant,
@@ -38,45 +41,10 @@ class ExitCode(IntEnum):
     SUCCESS, PARTIAL_SUCCESS, CONFIGURATION_FAILURE, OPERATION_FAILURE = 0, 2, 3, 4
 
 
-class Status(StrEnum):
-    SUCCESS, FAILED = "success", "failed"
-
-
-class ResultJson(TypedDict):
-    project_id: str
-    status: Status
-    local_path: str
-    default_branch: str
-    repository_url_config_key: str
-    commit: str
-    message: str
-
-
-@dataclass(frozen=True, slots=True)
-class ProjectConfig:
-    project_id: str
-    local_path: Path
-    url: str
-    default_branch: str
-    repository_url_config_key: str
-
-
 class ConfigError(Exception):
     def __init__(self, message: str) -> None:
         super().__init__(message)
         self.message: Final = message
-
-
-def failed(project_id: str, message: str, project: ProjectConfig | None = None) -> ResultJson:
-    return ResultJson(
-        project_id=project_id,
-        status=Status.FAILED,
-        local_path="" if project is None else str(project.local_path),
-        default_branch="" if project is None else project.default_branch,
-        repository_url_config_key="" if project is None else project.repository_url_config_key,
-        commit="",
-        message=message,
-    )
 
 
 def load_config(
@@ -84,7 +52,7 @@ def load_config(
 ) -> tuple[tuple[ProjectConfig, ...], tuple[ResultJson, ...]]:
     code_root = REPOSITORY_ROOT / "data" / "code"
     validate_root(code_root)
-    prepared: list[tuple[Project, ProjectConfig]] = []
+    prepared: list[tuple[Project, ProjectConfig, tuple[str, str]]] = []
     failures: list[ResultJson] = []
     for project in projects:
         local_path = REPOSITORY_ROOT.joinpath(*project.code_dir.parts)
@@ -95,12 +63,16 @@ def load_config(
             _ = validate_safe_descendant(code_root, local_path, allow_missing=True)
             if not URL_KEY_PATTERN.fullmatch(project.repository_url_config_key):
                 raise ConfigError("注册配置键不属于专用仓库 URL 命名空间。")
-            prepared.append((project, candidate))
+            prepared.append((project, candidate, credential_keys(project.repository_url_config_key)))
         except SafetyError:
             failures.append(failed(project.project_id, "注册项目路径无效。", candidate))
         except ConfigError as error:
             failures.append(failed(project.project_id, error.message, candidate))
-    selected_keys = frozenset(item.repository_url_config_key for item, _ in prepared)
+    selected_keys = frozenset(
+        key
+        for project, _, sibling_keys in prepared
+        for key in (project.repository_url_config_key, *sibling_keys)
+    )
     try:
         source: Mapping[str, tuple[str, ...]] = (
             parse_dotenv(env_path, selected_keys) if selected_keys else {}
@@ -108,24 +80,33 @@ def load_config(
     except ProtectedConfigError:
         failures.extend(
             failed(project.project_id, "无法读取注册仓库 URL 配置。", candidate)
-            for project, candidate in prepared
+            for project, candidate, _ in prepared
         )
         return (), tuple(failures)
     configured: list[ProjectConfig] = []
-    for project, candidate in prepared:
+    for project, candidate, sibling_keys in prepared:
         values = source.get(project.repository_url_config_key, ())
         if len(values) != 1 or not values[0].strip():
             message = "注册仓库 URL 配置重复。" if len(values) > 1 else "缺少注册仓库 URL 配置。"
             failures.append(failed(project.project_id, message, candidate))
             continue
         try:
-            _ = url_identity(values[0])
+            identity = url_identity(values[0])
         except SafetyError:
             failures.append(failed(project.project_id, "注册仓库 URL 配置无效。", candidate))
             continue
+        try:
+            credentials = repository_credentials(
+                source, sibling_keys, transport=identity.partition("://")[0]
+            )
+        except RepositoryCredentialError:
+            failures.append(failed(
+                project.project_id, "注册仓库 HTTP/HTTPS 凭据配置无效。", candidate
+            ))
+            continue
         configured.append(ProjectConfig(
             project.project_id, candidate.local_path, values[0], project.default_branch,
-            project.repository_url_config_key,
+            project.repository_url_config_key, credentials,
         )
         )
     return tuple(configured), tuple(failures)
@@ -148,18 +129,6 @@ def _checked_repository(project: ProjectConfig, code_root: Path, empty_hooks_pat
         raise GitFailure("本地仓库根目录与注册路径不一致。")
 
 
-def _success(project: ProjectConfig, commit: str, message: str) -> ResultJson:
-    return ResultJson(
-        project_id=project.project_id,
-        status=Status.SUCCESS,
-        local_path=str(project.local_path),
-        default_branch=project.default_branch,
-        repository_url_config_key=project.repository_url_config_key,
-        commit=commit,
-        message=message,
-    )
-
-
 def synchronize(project: ProjectConfig, code_root: Path, empty_hooks_path: Path) -> ResultJson:
     try:
         _ = validate_safe_descendant(code_root, project.local_path, allow_missing=True)
@@ -170,7 +139,12 @@ def synchronize(project: ProjectConfig, code_root: Path, empty_hooks_path: Path)
                 "clone", "--origin", REMOTE_NAME, "--branch", project.default_branch,
                 "--single-branch", "--", project.url, str(project.local_path),
             )
-            _ = run_git(CommandSpec(arguments, project.local_path.parent, (project.url,)), empty_hooks_path)
+            _ = run_git(
+                CommandSpec(arguments, project.local_path.parent, secrets=(project.url,),
+                            credentials=project.credentials,
+                            repository_url=project.url if project.credentials is not None else None),
+                empty_hooks_path,
+            )
             _checked_repository(project, code_root, empty_hooks_path)
             return _success(project, checked_commit(project, empty_hooks_path), "仓库已安全克隆。")
         _checked_repository(project, code_root, empty_hooks_path)
@@ -183,7 +157,12 @@ def synchronize(project: ProjectConfig, code_root: Path, empty_hooks_path: Path)
         if url_identity(actual_url) != url_identity(project.url):
             raise GitFailure("仓库 origin 地址与注册配置不一致。")
         previous = checked_commit(project, empty_hooks_path)
-        _ = run_git(CommandSpec(("fetch", "--prune", REMOTE_NAME), project.local_path), empty_hooks_path)
+        _ = run_git(
+            CommandSpec(("fetch", "--prune", REMOTE_NAME), project.local_path, secrets=(),
+                        credentials=project.credentials,
+                        repository_url=project.url if project.credentials is not None else None),
+            empty_hooks_path,
+        )
         remote_ref = f"refs/remotes/{REMOTE_NAME}/{project.default_branch}"
         counts = run_git(
             CommandSpec(("rev-list", "--left-right", "--count", f"HEAD...{remote_ref}"), project.local_path),
@@ -193,7 +172,9 @@ def synchronize(project: ProjectConfig, code_root: Path, empty_hooks_path: Path)
             raise GitFailure("无法可靠判断仓库是否可仅快进同步。")
         if int(counts[0]) != 0:
             raise GitFailure("本地历史无法仅快进同步，已拒绝更新。")
-        pull = CommandSpec(("pull", "--ff-only", REMOTE_NAME, project.default_branch), project.local_path)
+        pull = CommandSpec(("pull", "--ff-only", REMOTE_NAME, project.default_branch), project.local_path,
+                           secrets=(), credentials=project.credentials,
+                           repository_url=project.url if project.credentials is not None else None)
         _ = run_git(pull, empty_hooks_path)
         commit = checked_commit(project, empty_hooks_path)
         message = "仓库已仅快进同步。" if previous != commit else "仓库已是最新状态。"
@@ -206,11 +187,18 @@ def emit(results: tuple[ResultJson, ...]) -> None:
     print(json.dumps(results, ensure_ascii=False, separators=(",", ":")))
 
 
+def _configure_stdout_utf8() -> None:
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfigure):
+        reconfigure(encoding="utf-8")
+
+
 def main() -> int:
+    _configure_stdout_utf8()
     try:
         expected_sha256, requested, show_help = parse_arguments(tuple(sys.argv[1:]))
         if show_help:
-            print("用法：python tools/sync_repositories.py [--registry-sha256 <摘要>] [--project <项目 ID>]...\n安全同步注册表中的项目。")
+            print("用法：./.venv/Scripts/python.exe tools/sync_repositories.py [--registry-sha256 <摘要>] [--project <项目 ID>]...\n安全同步注册表中的项目。")
             return ExitCode.SUCCESS
         registry = load_project_registry(REPOSITORY_ROOT / "project-registry.yaml")
         if expected_sha256 is not None and registry.sha256 != expected_sha256:

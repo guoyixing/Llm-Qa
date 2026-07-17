@@ -339,17 +339,14 @@ class RegistryTestCase(unittest.TestCase):
         self.assertEqual(exit_code, 2)
         self.assertEqual(output.getvalue(), '{"error":"项目注册表加载失败"}\n')
 
-    def test_repository_sample_has_one_enabled_hisense_ids_app(self) -> None:
+    def test_repository_sample_is_valid_and_disabled(self) -> None:
         root = Path(__file__).resolve().parents[1]
 
         registry = load_project_registry(root / "project-registry.yaml")
 
-        self.assertEqual(
-            tuple(project.project_id for project in registry.projects),
-            ("hisense-ids-app",),
-        )
-        self.assertTrue(registry.projects[0].enabled)
-        self.assertEqual(select_projects(registry).projects, registry.projects)
+        self.assertEqual(len(registry.projects), 1)
+        self.assertFalse(registry.projects[0].enabled)
+        self.assertEqual(select_projects(registry).projects, ())
         self.assertTrue(registry.projects[0].repository_url_config_key.startswith("PROJECT_"))
 
 

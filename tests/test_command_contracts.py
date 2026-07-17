@@ -210,6 +210,35 @@ class CommandContractTests(unittest.TestCase):
         self.assertIn("同一注册表快照", content)
         self.assertIn("额外", content)
 
+    def test_daily_review_serializes_per_user_mail_delivery(self) -> None:
+        # Given
+        authority = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        command = (ROOT / ".opencode" / "commands" / "daily-review.md").read_text(
+            encoding="utf-8"
+        )
+
+        # When / Then
+        for clause in (
+            "按规范用户 ID 的 ASCII 码点升序",
+            "逐用户严格串行调用受信邮件入口",
+            "当前用户的调用已经返回且其结果完成校验后",
+            "不得并行、并发、后台或重叠调用",
+            "结果为 `UNKNOWN`",
+            "不得自动重试",
+            "继续按既定顺序处理后续用户",
+        ):
+            self.assertIn(clause, authority)
+        for clause in (
+            "按规范 `user_id` 的 ASCII 码点升序排序",
+            "逐项串行调用",
+            "前一用户调用已经返回并完成结果结构与状态校验后",
+            "禁止并行、并发、后台或重叠调用",
+            "返回 `UNKNOWN`",
+            "不重试",
+            "继续处理下一用户",
+        ):
+            self.assertIn(clause, command)
+
     def test_manual_review_forbids_synchronization(self) -> None:
         content = (ROOT / ".opencode" / "commands" / "code-review.md").read_text(
             encoding="utf-8"

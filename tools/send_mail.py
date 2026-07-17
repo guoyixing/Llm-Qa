@@ -33,14 +33,14 @@ if not __package__:
 
 from . import user_identity
 
-DeliveryStatus = Literal["ACCEPTED", "REJECTED", "UNKNOWN"]
+DeliveryStatus = Literal["ACCEPTED", "PARTIAL", "REJECTED", "UNKNOWN"]
 ROOT: Final = Path(__file__).resolve().parent.parent
 DAILY_DIR: Final = ROOT / "reports" / "daily"
 USER_PATTERN: Final = user_identity.USER_ID_PATTERN
 CSS_REMOTE: Final = re.compile(r"(?:url|src|image|image-set|cross-fade|-webkit-image-set)\s*\(|@import\b|@namespace\b", re.IGNORECASE)
 BANNED_TAGS: Final = frozenset({"audio", "base", "embed", "form", "iframe", "image", "img", "link", "math", "meta", "object", "picture", "script", "source", "style", "svg", "track", "use", "video"})
 REMOTE_ATTRIBUTES: Final = frozenset({"action", "background", "codebase", "data", "formaction", "manifest", "ping", "poster", "src", "srcset"})
-OUTCOMES: Final[dict[DeliveryStatus, tuple[str, str, int]]] = {"ACCEPTED": ("邮件投递已被服务器接受", "已接受", 0), "REJECTED": ("邮件投递被明确拒绝", "明确拒绝", 4), "UNKNOWN": ("投递结果不明确，禁止声称成功", "结果不明确", 4)}
+OUTCOMES: Final[dict[DeliveryStatus, tuple[str, str, int]]] = {"ACCEPTED": ("邮件投递已被全部收件服务器接受", "已接受", 0), "PARTIAL": ("邮件仅被部分收件服务器接受", "部分接受", 4), "REJECTED": ("邮件投递被全部收件服务器明确拒绝", "明确拒绝", 4), "UNKNOWN": ("投递结果不明确，禁止声称成功", "结果不明确", 4)}
 
 
 @final
@@ -85,7 +85,7 @@ class SafeHtmlParser:
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         lowered = tag.casefold()
-        if lowered in BANNED_TAGS or ":" in lowered: raise MailError("HTML内容不安全", "HTML 包含禁止的活动内容或远程资源", 3)
+        if (lowered in BANNED_TAGS and (lowered != "meta" or attrs != [("charset", "utf-8")])) or ":" in lowered: raise MailError("HTML内容不安全", "HTML 包含禁止的活动内容或远程资源", 3)
         if lowered in {"html", "body"}:
             if lowered in self.seen_structure or (lowered == "body" and "html" not in self.open_structure): raise MailError("HTML结构错误", "HTML 的 html 或 body 结构无效", 3)
             self.seen_structure.add(lowered)
@@ -209,23 +209,23 @@ def report(raw_user: str, markdown_raw: Path, html_raw: Path) -> Report:
     return Report(user_id, day, f"{day} {user_id} 代码质量审查日报", html_text)
 
 
-def recipient(
-    user: user_identity.User,
-    values: Mapping[str, str],
-) -> user_identity.EmailAddress:
-    if user.manager is not None: return user.manager
+def recipients(user: user_identity.User, values: Mapping[str, str]) -> tuple[user_identity.EmailAddress, ...]:
+    if dedicated := user_identity.parse_leaders(values, user.user_id): return dedicated
     fallback = values.get("DEFAULT_LEADER_EMAIL", "").strip()
     if not fallback: raise MailError("无收件人", "未配置可用的领导收件人", 3)
-    return email(fallback)
+    return user_identity.parse_emails(fallback)
 
 
-def deliver(
-    config: Smtp,
-    target: user_identity.EmailAddress,
-    item: Report,
-) -> DeliveryStatus:
+def classify_delivery(refused: Mapping[str, tuple[int, bytes]], recipient_count: int) -> DeliveryStatus:
+    if not refused: return "ACCEPTED"
+    permanently_refused = all(500 <= code < 600 for code, _ in refused.values())
+    if len(refused) < recipient_count: return "PARTIAL" if permanently_refused else "UNKNOWN"
+    return "REJECTED" if permanently_refused else "UNKNOWN"
+
+
+def deliver(config: Smtp, targets: tuple[user_identity.EmailAddress, ...], item: Report) -> DeliveryStatus:
     message = EmailMessage()
-    message["Subject"], message["From"], message["To"] = item.subject, config.sender, target
+    message["Subject"], message["From"], message["To"] = item.subject, config.sender, ", ".join(targets)
     message.set_content(item.html, subtype="html", charset="utf-8")
     context = ssl.create_default_context()
     if config.use_ssl:
@@ -239,8 +239,7 @@ def deliver(
             _ = client.ehlo()
             if config.username: _ = client.login(config.username, config.password)
             refused = client.send_message(message)
-    if refused: return "REJECTED" if all(500 <= code < 600 for code, _ in refused.values()) else "UNKNOWN"
-    return "ACCEPTED"
+    return classify_delivery(refused, len(targets))
 
 
 def parse_args(raw: Sequence[str]) -> Args:
@@ -262,13 +261,13 @@ def send_mode(args: Args) -> int:
             str(item.user_id),
             user_identity.parse_users(values),
         )
-        target = recipient(user, values)
+        targets = recipients(user, values)
         config = smtp(values)
     except (user_identity.IdentityConfigError, MailError) as error:
         return respond({"status": f"投递前失败：{error.message}", "error_code": error.code}, error.exit_code)
     try:
-        status = deliver(config, target, item)
-    except smtplib.SMTPRecipientsRefused as error: status = "REJECTED" if error.recipients and all(500 <= code < 600 for code, _ in error.recipients.values()) else "UNKNOWN"
+        status = deliver(config, targets, item)
+    except smtplib.SMTPRecipientsRefused as error: status = classify_delivery(error.recipients, len(targets))
     except smtplib.SMTPResponseException as error: status = "REJECTED" if 500 <= error.smtp_code < 600 else "UNKNOWN"
     except (smtplib.SMTPException, OSError): status = "UNKNOWN"
     message, reason, exit_code = OUTCOMES[status]

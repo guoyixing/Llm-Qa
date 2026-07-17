@@ -17,8 +17,8 @@ VALID_ENV = {
     "USER_1_ID": "alice",
     "USER_1_NAME": "张三",
     "USER_1_GIT_EMAIL": "alice@example.com",
-    "USER_1_LEADER_EMAIL": "leader@example.com",
-    "DEFAULT_LEADER_EMAIL": "default@example.com",
+    "USER_1_LEADER_EMAIL": "leader-a@example.com, leader-b@example.com",
+    "DEFAULT_LEADER_EMAIL": "default-a@example.com, default-b@example.com",
     "SMTP_HOST": "smtp.example.com",
     "SMTP_PORT": "465",
     "SMTP_TIMEOUT_SECONDS": "10",
@@ -233,7 +233,7 @@ class SendMailIdentityTests(unittest.TestCase):
         self.assertEqual(item.subject, "2026-07-17 alice 代码质量审查日报")
         self.assertNotIn("张三", item.subject)
 
-    def test_send_mode_keeps_id_argv_and_manager_routing(self) -> None:
+    def test_send_mode_keeps_id_argv_and_leader_routing(self) -> None:
         # Given
         item = Report(
             user_id=UserId("alice"),
@@ -266,8 +266,14 @@ class SendMailIdentityTests(unittest.TestCase):
             Path("reports/daily/2026-07-17/alice-code-review.md"),
             Path("reports/daily/2026-07-17/alice-code-review.html"),
         )
-        delivery.assert_called_once_with(ANY, EmailAddress("leader@example.com"), item)
-
+        delivery.assert_called_once_with(
+            ANY,
+            (
+                EmailAddress("leader-a@example.com"),
+                EmailAddress("leader-b@example.com"),
+            ),
+            item,
+        )
 
 if __name__ == "__main__":
     _ = unittest.main()

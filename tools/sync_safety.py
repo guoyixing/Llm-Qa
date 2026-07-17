@@ -5,11 +5,16 @@ import re
 import subprocess
 from collections.abc import Mapping
 from configparser import ConfigParser, Error as ConfigParserError
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final
 from urllib.parse import urlsplit
 
+from tools.git_askpass import (
+    RepositoryOriginError,
+    repository_origin,
+    temporary_askpass,
+)
 from tools.path_safety import (
     REPARSE_POINT,
     SafetyError,
@@ -20,6 +25,7 @@ from tools.path_safety import (
     validate_safe_descendant,
     validate_sync_path,
 )
+from tools.repository_config import RepositoryCredentials
 
 COMMAND_TIMEOUT_SECONDS: Final = 120
 ALLOWED_GIT_OPTIONS: Final = (
@@ -48,11 +54,39 @@ class GitFailure(Exception):
         self.message: Final = message
 
 
+class CommandSpecCredentialPairingError(Exception):
+    def __init__(self) -> None:
+        super().__init__("Git 认证配置必须成对提供。")
+
+
 @dataclass(frozen=True, slots=True)
 class CommandSpec:
     arguments: tuple[str, ...]
     working_directory: Path
-    secrets: tuple[str, ...] = ()
+    secrets: tuple[str, ...] = field(default=(), repr=False)
+    credentials: RepositoryCredentials | None = field(default=None, repr=False)
+    repository_url: str | None = field(default=None, repr=False)
+
+    def __post_init__(self) -> None:
+        if (self.credentials is None) != (self.repository_url is None):
+            raise CommandSpecCredentialPairingError
+
+
+def _execute_git(
+    spec: CommandSpec, prefix: tuple[str, ...], environment: dict[str, str]
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [*prefix, *spec.arguments],
+        cwd=spec.working_directory,
+        env=environment,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=COMMAND_TIMEOUT_SECONDS,
+        check=False,
+        shell=False,
+    )
 
 
 def run_git(spec: CommandSpec, empty_hooks_path: Path) -> str:
@@ -96,29 +130,48 @@ def run_git(spec: CommandSpec, empty_hooks_path: Path) -> str:
         "-c",
         "core.pager=cat",
         "-c",
+        "credential.helper=",
+        "-c",
         "protocol.ext.allow=never",
     )
     try:
-        completed = subprocess.run(
-            [*prefix, *spec.arguments],
-            cwd=spec.working_directory,
-            env=environment,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=COMMAND_TIMEOUT_SECONDS,
-            check=False,
-        )
-    except subprocess.TimeoutExpired as error:
-        raise GitFailure("Git 命令超时，未报告成功。") from error
-    except OSError as error:
-        raise GitFailure("Git 命令无法安全启动。") from error
+        if spec.credentials is None:
+            completed = _execute_git(spec, prefix, environment)
+        else:
+            repository_url = spec.repository_url
+            if repository_url is None:
+                raise GitFailure("Git 身份认证配置无效。")
+            try:
+                identity = url_identity(repository_url)
+                origin = repository_origin(identity)
+            except (RepositoryOriginError, SafetyError):
+                raise GitFailure("Git 身份认证配置无效。") from None
+            credential_prefix = (
+                (*prefix, "-c", "http.followRedirects=false")
+                if origin[0] == "http"
+                else prefix
+            )
+            with temporary_askpass(empty_hooks_path, spec.credentials, origin) as session:
+                try:
+                    environment.update(session.environment)
+                    environment["GIT_ASKPASS"] = str(session.launcher)
+                    completed = _execute_git(spec, credential_prefix, environment)
+                finally:
+                    for key in tuple(session.environment):
+                        environment.pop(key, None)
+                    environment["GIT_ASKPASS"] = ""
+    except subprocess.TimeoutExpired:
+        raise GitFailure("Git 命令超时，未报告成功。") from None
+    except OSError:
+        raise GitFailure("Git 命令无法安全启动。") from None
     if completed.returncode != 0:
         safe_error = re.sub(
             r"(?i)(https?://)[^/@\s]+@", r"\1***@", completed.stderr.lower()
         )
-        for secret in spec.secrets:
+        credential_secrets = () if spec.credentials is None else (
+            spec.credentials.username, spec.credentials.password,
+        )
+        for secret in (*spec.secrets, *credential_secrets):
             safe_error = safe_error.replace(secret.lower(), "***") if secret else safe_error
         authentication_failed = any(
             item in safe_error
@@ -156,9 +209,11 @@ def url_identity(url: str) -> str:
         and "#" not in url
     )
     if valid_url and parsed.hostname is not None:
+        hostname = parsed.hostname.lower()
+        authority_host = f"[{hostname}]" if ":" in hostname else hostname
         port = f":{parsed_port}" if parsed_port is not None else ""
         path = parsed.path.lstrip("/").removesuffix(".git").rstrip("/")
-        return f"{parsed.scheme.lower()}://{parsed.hostname.lower()}{port}/{path}"
+        return f"{parsed.scheme.lower()}://{authority_host}{port}/{path}"
     scp = re.fullmatch(
         r"([A-Za-z0-9][A-Za-z0-9._-]{0,63})@"
         r"([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"

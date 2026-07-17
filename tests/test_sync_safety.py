@@ -87,6 +87,19 @@ class SyncPathSafetyTests(unittest.TestCase):
         with self.assertRaises(SafetyError):
             url_identity("-oProxyCommand=bad@example.invalid:team/repository.git")
 
+    def test_url_identity_preserves_ipv6_authority_brackets(self) -> None:
+        # Given
+        repository_url = "https://[2001:DB8::1]:8443/team/repository.git"
+
+        # When
+        identity = url_identity(repository_url)
+
+        # Then
+        self.assertEqual(
+            identity,
+            "https://[2001:db8::1]:8443/team/repository",
+        )
+
     def test_url_identity_rejects_whitespace_and_controls(self) -> None:
         for value in (
             "https://example.invalid/team/repository git",

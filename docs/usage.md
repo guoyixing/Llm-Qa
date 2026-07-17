@@ -80,10 +80,11 @@ SMTP_PASSWORD=<密码，可留空>
 SMTP_FROM=<发件人邮箱>
 SMTP_USE_TLS=true
 SMTP_USE_SSL=false
+SMTP_VERIFY_CERTIFICATE=true
 SMTP_TIMEOUT_SECONDS=<超时秒数>
 ```
 
-TLS 与 SSL 必须且只能启用一个。需要认证时，用户名和密码必须同时填写。超时必须大于 0 且不超过 120 秒。
+TLS 与 SSL 必须且只能启用一个。需要认证时，用户名和密码必须同时填写。超时必须大于 0 且不超过 120 秒。`SMTP_VERIFY_CERTIFICATE` 省略时默认为 `true`；只有受控内网 SMTP 无法提供匹配证书且操作者接受 `AGENTS.md` 第 8 节所述风险时，才可显式设置为小写 `false`。
 
 ## 4. 三个命令
 

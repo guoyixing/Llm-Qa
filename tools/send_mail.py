@@ -58,6 +58,7 @@ class Smtp(NamedTuple):
     password: str
     sender: user_identity.EmailAddress
     use_ssl: bool
+    verify_certificate: bool = True
 
 
 class Report(NamedTuple):
@@ -161,11 +162,13 @@ def smtp(values: Mapping[str, str]) -> Smtp:
     tls, ssl_value = require(values, "SMTP_USE_TLS").casefold(), require(values, "SMTP_USE_SSL").casefold()
     if tls not in {"true", "false"} or ssl_value not in {"true", "false"}: raise MailError("SMTP配置错误", "TLS 或 SSL 开关配置无效")
     use_tls, use_ssl = tls == "true", ssl_value == "true"
+    verify_certificate = values.get("SMTP_VERIFY_CERTIFICATE", "true")
+    if verify_certificate not in {"true", "false"}: raise MailError("SMTP配置错误", "SMTP_VERIFY_CERTIFICATE 仅接受 true 或 false")
     username, password = values.get("SMTP_USERNAME", "").strip(), values.get("SMTP_PASSWORD", "")
     if not 1 <= port <= 65535 or not 0 < timeout <= 120 or use_tls == use_ssl: raise MailError("SMTP配置错误", "SMTP 端口、超时或加密模式无效")
     if port == 465 and not use_ssl: raise MailError("SMTP配置错误", "SMTP 465 端口必须使用 SSL 隐式 TLS")
     if bool(username) != bool(password): raise MailError("SMTP配置错误", "SMTP 认证配置不完整")
-    return Smtp(require(values, "SMTP_HOST"), port, timeout, username, password, email(require(values, "SMTP_FROM")), use_ssl)
+    return Smtp(require(values, "SMTP_HOST"), port, timeout, username, password, email(require(values, "SMTP_FROM")), use_ssl, verify_certificate == "true")
 
 
 def controlled(raw: Path, maximum: int) -> Path:
@@ -228,6 +231,9 @@ def deliver(config: Smtp, targets: tuple[user_identity.EmailAddress, ...], item:
     message["Subject"], message["From"], message["To"] = item.subject, config.sender, ", ".join(targets)
     message.set_content(item.html, subtype="html", charset="utf-8")
     context = ssl.create_default_context()
+    if not config.verify_certificate:
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
     if config.use_ssl:
         with smtplib.SMTP_SSL(config.host, config.port, timeout=config.timeout, context=context) as client:
             if config.username: _ = client.login(config.username, config.password)

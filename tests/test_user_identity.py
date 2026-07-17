@@ -8,7 +8,7 @@ from tools.user_identity import (
     UserId,
     UserName,
     find_user,
-    parse_email,
+    parse_leaders,
     parse_users,
 )
 
@@ -69,7 +69,6 @@ class UserIdentityTests(unittest.TestCase):
             "USER_1_ID": "alice",
             "USER_1_NAME": "张三",
             "USER_1_GIT_EMAIL": "alice@example.com",
-            "USER_1_LEADER_EMAIL": "leader@example.com",
         }
 
         # When
@@ -83,12 +82,91 @@ class UserIdentityTests(unittest.TestCase):
                     user_id=UserId("alice"),
                     user_name=UserName("张三"),
                     git_email=EmailAddress("alice@example.com"),
-                    manager=EmailAddress("leader@example.com"),
                 ),
             ),
         )
         with self.assertRaises(FrozenInstanceError):
             setattr(configured[0], "user_name", UserName("李四"))
+
+    def test_parse_leaders_preserves_single_address_as_one_item_tuple(self) -> None:
+        # Given
+        values = {
+            "USER_1_ID": "alice",
+            "USER_1_NAME": "张三",
+            "USER_1_GIT_EMAIL": "alice@example.com",
+            "USER_1_LEADER_EMAIL": "leader@example.com",
+        }
+
+        # When
+        leaders = parse_leaders(values, UserId("alice"))
+
+        # Then
+        self.assertEqual(
+            leaders,
+            (EmailAddress("leader@example.com"),),
+        )
+
+    def test_parse_leaders_trims_multiple_addresses(self) -> None:
+        # Given
+        values = {
+            "USER_1_ID": "alice",
+            "USER_1_LEADER_EMAIL": (
+                " leader-a@example.com, leader-b@example.com "
+            ),
+        }
+
+        # When
+        leaders = parse_leaders(values, UserId("alice"))
+
+        # Then
+        self.assertEqual(
+            leaders,
+            (
+                EmailAddress("leader-a@example.com"),
+                EmailAddress("leader-b@example.com"),
+            ),
+        )
+
+    def test_parse_leaders_parses_multiple_addresses_with_whitespace(self) -> None:
+        # Given
+        values = {
+            "USER_1_ID": "alice",
+            "USER_1_LEADER_EMAIL": " leader-a@example.com, leader-b@example.com ",
+        }
+
+        # When
+        leaders = parse_leaders(values, UserId("alice"))
+
+        # Then
+        self.assertEqual(
+            leaders,
+            (
+                EmailAddress("leader-a@example.com"),
+                EmailAddress("leader-b@example.com"),
+            ),
+        )
+
+    def test_parse_leaders_rejects_empty_or_duplicate_address(self) -> None:
+        # Given
+        invalid_leaders = (
+            "leader-a@example.com,,leader-b@example.com",
+            ",leader@example.com",
+            "leader@example.com,",
+            "leader@example.com,LEADER@example.com",
+        )
+
+        # When / Then
+        for raw_leaders in invalid_leaders:
+            values = {
+                "USER_1_ID": "alice",
+                "USER_1_NAME": "张三",
+                "USER_1_GIT_EMAIL": "alice@example.com",
+                "USER_1_LEADER_EMAIL": raw_leaders,
+            }
+            with self.subTest(raw_leaders=raw_leaders), self.assertRaises(
+                IdentityConfigError,
+            ):
+                _ = parse_leaders(values, UserId("alice"))
 
     def test_parse_users_rejects_missing_or_blank_name(self) -> None:
         # Given
@@ -226,16 +304,6 @@ class UserIdentityTests(unittest.TestCase):
         with self.assertRaises(IdentityConfigError):
             _ = parse_users(values)
 
-    def test_parse_email_trims_valid_address(self) -> None:
-        # Given
-        raw_email = "  alice@example.com  "
-
-        # When
-        parsed = parse_email(raw_email)
-
-        # Then
-        self.assertEqual(parsed, EmailAddress("alice@example.com"))
-
     def test_find_user_returns_unique_typed_match(self) -> None:
         # Given
         configured = (
@@ -243,7 +311,6 @@ class UserIdentityTests(unittest.TestCase):
                 user_id=UserId("alice"),
                 user_name=UserName("张三"),
                 git_email=EmailAddress("alice@example.com"),
-                manager=None,
             ),
         )
 
@@ -260,7 +327,6 @@ class UserIdentityTests(unittest.TestCase):
                 user_id=UserId("alice"),
                 user_name=UserName("张三"),
                 git_email=EmailAddress("alice@example.com"),
-                manager=None,
             ),
         )
 

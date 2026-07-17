@@ -32,10 +32,11 @@ class User:
     user_id: UserId
     user_name: UserName
     git_email: EmailAddress
-    manager: EmailAddress | None
 
 
 def parse_email(raw: str) -> EmailAddress:
+    if any(unicodedata.category(character) == "Cc" for character in raw):
+        raise IdentityConfigError("邮箱配置错误", "邮件地址配置无效")
     value = raw.strip()
     display, address = parseaddr(value)
     is_valid = (
@@ -43,11 +44,33 @@ def parse_email(raw: str) -> EmailAddress:
         and not display
         and address == value
         and "@" in address
-        and not any(character in value for character in "\r\n")
     )
     if not is_valid:
         raise IdentityConfigError("邮箱配置错误", "邮件地址配置无效")
     return EmailAddress(address)
+
+
+def parse_emails(raw: str) -> tuple[EmailAddress, ...]:
+    parts = raw.split(",")
+    if any(not part.strip() for part in parts):
+        raise IdentityConfigError("邮箱配置错误", "邮件地址列表包含空项")
+    addresses = tuple(parse_email(part) for part in parts)
+    normalized = tuple(address.casefold() for address in addresses)
+    if len(set(normalized)) != len(normalized):
+        raise IdentityConfigError("邮箱配置错误", "邮件地址配置重复")
+    return addresses
+
+
+def parse_leaders(values: Mapping[str, str], user_id: UserId) -> tuple[EmailAddress, ...]:
+    indexes = tuple(
+        match.group(1)
+        for key, value in values.items()
+        if (match := USER_INDEX_PATTERN.fullmatch(key)) and value.strip() == str(user_id)
+    )
+    if USER_ID_PATTERN.fullmatch(str(user_id)) is None or len(indexes) != 1:
+        raise IdentityConfigError("用户不存在", "未找到唯一规范用户", 3)
+    raw_leaders = values.get(f"USER_{indexes[0]}_LEADER_EMAIL", "").strip()
+    return parse_emails(raw_leaders) if raw_leaders else ()
 
 
 def parse_users(values: Mapping[str, str]) -> tuple[User, ...]:
@@ -85,13 +108,11 @@ def parse_users(values: Mapping[str, str]) -> tuple[User, ...]:
                 "Git 作者邮箱无效或重复",
             )
 
-        raw_manager = values.get(f"USER_{index}_LEADER_EMAIL", "").strip()
         configured.append(
             User(
                 user_id=user_id,
                 user_name=UserName(raw_name),
                 git_email=git_email,
-                manager=parse_email(raw_manager) if raw_manager else None,
             ),
         )
         seen_ids.add(user_id)

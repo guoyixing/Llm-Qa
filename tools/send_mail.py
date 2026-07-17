@@ -163,6 +163,7 @@ def smtp(values: Mapping[str, str]) -> Smtp:
     use_tls, use_ssl = tls == "true", ssl_value == "true"
     username, password = values.get("SMTP_USERNAME", "").strip(), values.get("SMTP_PASSWORD", "")
     if not 1 <= port <= 65535 or not 0 < timeout <= 120 or use_tls == use_ssl: raise MailError("SMTP配置错误", "SMTP 端口、超时或加密模式无效")
+    if port == 465 and not use_ssl: raise MailError("SMTP配置错误", "SMTP 465 端口必须使用 SSL 隐式 TLS")
     if bool(username) != bool(password): raise MailError("SMTP配置错误", "SMTP 认证配置不完整")
     return Smtp(require(values, "SMTP_HOST"), port, timeout, username, password, email(require(values, "SMTP_FROM")), use_ssl)
 

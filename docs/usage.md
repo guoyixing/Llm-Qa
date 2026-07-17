@@ -8,10 +8,10 @@
 
 ### 1.1 准备 Python 和 OpenCode
 
-受信同步和邮件入口都使用固定命令名 `python`，要求 Python 3.11 或更高版本。部署账号的 `PATH` 必须让下面的命令启动真实可用的 Python，不能指向不可用的 WindowsApps 别名：
+受信同步和邮件入口都使用固定前缀 `./.venv/Scripts/python.exe`，该虚拟环境中的 Python 必须为 3.11 或更高版本。使用下面的规范命令确认版本：
 
 ```text
-python --version
+./.venv/Scripts/python.exe --version
 ```
 
 OpenCode 必须从本仓库根目录启动，以加载根目录 `opencode.json`、`AGENTS.md` 和项目 Skill。
@@ -20,29 +20,31 @@ OpenCode 必须从本仓库根目录启动，以加载根目录 `opencode.json`�
 
 ### 1.2 创建 `.env`
 
-在仓库根目录创建 `.env`。真实仓库地址、用户邮箱、领导邮箱和 SMTP 凭据只写入这个文件，不要放进提示词、报告、命令参数或版本控制。模型和审查代理不得读取 `.env`；只有受信同步脚本和邮件脚本按各自职责读取所需配置。
+在仓库根目录创建 `.env`。真实仓库地址、用户邮箱、领导邮箱和 SMTP 凭据只写入这个文件，不要放进提示词、报告、命令参数或版本控制。模型、审查代理和 OpenCode 命令不得读取 `.env`；只有受信同步脚本和邮件脚本按各自职责读取所需配置。
 
 ## 2. 项目配置
 
-项目集合、目录、分支和 remote 已固定，不通过配置修改：
+项目成员、项目标识、名称、代码目录、规范目录、默认分支和仓库 URL 配置键只来自当前 `project-registry.yaml`。不要用目录扫描、Git remote、旧同步结果、工作区内容或固定项目列表补充或覆盖注册表。
 
-| 项目 | 固定目录 | 固定分支 | 固定 remote | `.env` 中的仓库地址键 |
-| --- | --- | --- | --- | --- |
-| `api` | `data/code/api` | `main` | `origin` | `PROJECT_API_REPO_URL` |
-| `web` | `data/code/web` | `develop` | `origin` | `PROJECT_WEB_REPO_URL` |
-| `jobs` | `data/code/jobs` | `main` | `origin` | `PROJECT_JOBS_REPO_URL` |
-
-受信同步脚本只从仓库根目录 `.env` 读取项目 URL；同名进程环境变量不会补充或覆盖。项目配置只填写三个仓库地址：
+受信同步脚本先校验注册表中的 `repository_url_config_key` 属于专用仓库 URL 配置命名空间，再按该键从仓库根目录 `.env` 读取对应 URL。模型和命令只传递已校验的注册表快照和所选项目，不读取或输出 `.env`、仓库 URL 或凭据。Hisense 项目可按下面的非秘密示例手动填写：
 
 ```text
-PROJECT_API_REPO_URL=https://example.com/acme/api.git
-PROJECT_WEB_REPO_URL=https://example.com/acme/web.git
-PROJECT_JOBS_REPO_URL=https://example.com/acme/jobs.git
+PROJECT_HISENSE_IDS_APP_REPO_URL=https://example.com/hisense/ids-app.git
+# HTTP 或 HTTPS 仓库需要认证时，同时取消注释并手动填写下面两项
+# HTTP 不提供 TLS 保护，凭据可能被明文窃听或篡改；应优先迁移至 HTTPS
+# PROJECT_HISENSE_IDS_APP_REPO_USERNAME=<手动填写用户名>
+# PROJECT_HISENSE_IDS_APP_REPO_PASSWORD=<手动填写密码>
 ```
 
-不要配置项目编号、项目路径、分支、remote 或代码根目录来覆盖固定定义。三个项目都位于仓库内 `data/code/`，项目路径不得使用符号链接、别名或目录替换。
+可选凭据键由已校验的 `<prefix>_URL` 派生为同级 `<prefix>_USERNAME` 和 `<prefix>_PASSWORD`。凭据只用于 HTTP 或 HTTPS 仓库，需要认证时必须同时添加用户名与密码；两项都不存在时使用匿名访问。不要把注释示例改成有效的空值，键存在但值为空会校验失败。用户名或密码中的特殊字符应直接按 dotenv 值语法填写，必要时按 dotenv 语法加引号，不得嵌入仓库 URL，也不得先做 URL 编码。HTTP 不提供 TLS 保护，凭据和仓库传输可能被明文窃听或篡改，应优先迁移至 HTTPS。
 
-公共规范位于 `standards/common/`，项目规范位于 `standards/projects/api/`、`standards/projects/web/` 和 `standards/projects/jobs/`。审查先加载公共规范，再加载对应项目规范。
+用户名和密码恰有一项存在、任一同级键重复、任一值为空、超过 1024 个 Unicode 码点、包含 Unicode `Cc` 类控制字符，或配置凭据时仓库 URL 不是 HTTP 或 HTTPS，都会让受信同步脚本在任何网络 Git 操作前只将该项目标记失败，并返回固定、脱敏的中文说明。其他独立项目继续处理。
+
+合法凭据只通过该项目 clone、fetch 或 pull 期间创建的一次性临时 `GIT_ASKPASS` 提供。每次 Git 调用都关闭终端提示和持久凭据助手，AskPass 只在提示 URL 的精确 origin 与项目绑定 origin 完全一致时应答。origin 由协议、规范化主机名和有效端口组成，HTTP 和 HTTPS 的默认端口分别为 80 和 443；协议不同即视为不同 origin，即使主机名和数值端口相同也不例外。携带凭据的 HTTP clone、fetch 或 pull 每次都设置 `http.followRedirects=false`。临时程序及其路径不含秘密，并在成功、失败、取消或异常退出时删除，同时恢复临时环境。秘密不会进入仓库 URL、命令行参数、同步结果、报告、持久 Git 配置或异常说明；同步直接结果仍严格保持既有七个字段，不增加认证字段或配置值。
+
+不要在 `.env` 中配置项目编号、路径、分支、remote 或代码根目录来覆盖注册表。`code_dir` 必须安全位于仓库内 `data/code/` 下，`standards_dir` 必须安全位于 `standards/projects/` 下，路径不得使用符号链接、重解析点、别名或目录替换。
+
+公共规范位于 `standards/common/`，项目规范目录由当前注册表的 `standards_dir` 指定。审查先加载公共规范，再加载对应项目规范。
 
 ## 3. 用户、领导和 SMTP 配置
 
@@ -51,13 +53,18 @@ PROJECT_JOBS_REPO_URL=https://example.com/acme/jobs.git
 每位提交人配置一组规范用户信息：
 
 ```text
-USER_<N>_ID=<规范用户标识>
-USER_<N>_GIT_EMAIL=<Git Author Email>
-USER_<N>_LEADER_EMAIL=<专属领导邮箱，可留空>
+USER_<n>_ID=<规范用户标识>
+USER_<n>_NAME=<姓名>
+USER_<n>_GIT_EMAIL=<Git Author Email>
+USER_<n>_LEADER_EMAIL=<专属领导邮箱，可留空>
 DEFAULT_LEADER_EMAIL=<默认领导邮箱>
 ```
 
-`USER_<N>_LEADER_EMAIL` 有值时，邮件发给该用户的专属领导；为空时使用 `DEFAULT_LEADER_EMAIL`。两者都不可用时，该用户投递失败，不能通过提示词或命令参数临时指定收件人。
+`USER_<n>_ID` 是机器标识，继续使用既有的窄 ASCII 格式，并且只由它控制路径、文件名、CLI 参数、跨项目聚合、收件人路由和邮件主题。`USER_<n>_NAME` 是必填的人类姓名：读取后去除首尾空白，结果必须非空且不超过 128 个 Unicode 码点，拒绝任何 Unicode `Cc` 类控制字符，其他 Unicode 字符保持原样。不同用户可以使用相同 NAME，不要求唯一。
+
+NAME 只用于报告和邮件正文中经过转义的身份标签 `姓名（user_id）`，不会替代 ID，也不参与路径、文件名、CLI、聚合、收件人路由或主题。NAME 和示例文字都按不可信文本处理，其中的标记或指令只作为正文数据，不会被执行。
+
+`USER_<n>_LEADER_EMAIL` 有值时，邮件发给该用户的专属领导；为空时使用 `DEFAULT_LEADER_EMAIL`。两者都不可用时，该用户投递失败，不能通过提示词或命令参数临时指定收件人。
 
 用户 Git 邮箱、领导邮箱、默认领导邮箱和 SMTP 发件人都应填写不带显示名称、换行或控制字符的完整邮箱地址。提交的 Git Author Email 在调用身份入口前还必须通过窄 ASCII 格式校验；包含空白、控制字符、引号、反引号、Shell 或 PowerShell 元字符等危险内容时，不调用身份入口，按未归属提交处理。
 
@@ -82,7 +89,7 @@ TLS 与 SSL 必须且只能启用一个。需要认证时，用户名和密码�
 
 ### 4.1 `/daily-review`
 
-日报命令执行一次完整流程：在同一次调用中先直接运行一次固定受信入口 `python tools/sync_repositories.py`，立即校验并消费这次调用返回的项目结果，然后完成审查、报告、HTML 和邮件。它不会调用 `/sync-repositories`，也不会使用先前同步命令、缓存、日志、旧输出或旧工作区。
+日报命令执行一次完整流程：在同一次调用中先直接运行一次固定受信入口 `./.venv/Scripts/python.exe tools/sync_repositories.py`，立即校验并消费这次调用返回的项目结果，然后完成审查、报告、HTML 和邮件。它不会调用 `/sync-repositories`，也不会使用先前同步命令、缓存、日志、旧输出或旧工作区。
 
 默认日报：
 
@@ -93,14 +100,14 @@ TLS 与 SSL 必须且只能启用一个。需要认证时，用户名和密码�
 也可以限定项目、日期或范围：
 
 ```text
-/daily-review project=api
-/daily-review project=api project=web date=2026-07-13
+/daily-review project=<project_id>
+/daily-review project=<project_id_1> project=<project_id_2> date=2026-07-13
 /daily-review date-range=2026-07-01,2026-07-13 directory=src
 ```
 
 未给出 `date` 或 `date-range` 时，使用 `Asia/Hong_Kong` 时区的前一自然日，窗口从前一日 `00:00:00`（含）到当日 `00:00:00`（不含）。
 
-同步结果按 `api`、`web`、`jobs` 逐项目独立校验。只审查这次调用中状态成功、路径严格匹配固定目录且提交为 40 位小写十六进制 SHA 的目标项目。至少一个目标项目可信成功时，继续可靠项目并列出失败原因；零可信成功项目时停止审查、HTML 和邮件。
+同步结果按本次注册表快照中的所选项目逐项独立校验，包括 `project_id`、`code_dir`、`default_branch`、`repository_url_config_key` 的绑定关系和完整 40 位小写十六进制提交 SHA。只审查这次调用中状态成功且七字段直接结果可信的目标项目。至少一个目标项目可信成功时，继续可靠项目并列出失败原因；零可信成功项目时停止审查、HTML 和邮件。
 
 ### 4.2 `/sync-repositories`
 
@@ -108,21 +115,21 @@ TLS 与 SSL 必须且只能启用一个。需要认证时，用户名和密码�
 
 ```text
 /sync-repositories
-/sync-repositories project=api
+/sync-repositories project=<project_id>
 ```
 
-命令调用受信同步脚本并显示每个项目的项目标识、状态、本地路径、固定提交 SHA 和中文说明。它不生成报告、不发送邮件，也不持久化结果。脏工作区、错误分支、remote 不匹配、非快进历史或无效 SHA 会使对应项目失败，命令不会清理或修复仓库。
+命令调用受信同步脚本并显示每个项目既有七字段直接结果中的脱敏信息。结果保持项目、状态、本地路径、默认分支、固定提交 SHA、仓库 URL 配置键绑定和中文说明语义，不包含仓库 URL、凭据或认证字段。它不生成报告、不发送邮件，也不持久化结果。脏工作区、错误分支、remote 不匹配、非快进历史或无效 SHA 会使对应项目失败，命令不会清理或修复仓库。
 
 ### 4.3 `/code-review`
 
-手动审查不会调用同步脚本或同步命令，不读取或推断任何同步结果，也不生成 HTML 或发送邮件。它只使用项目表中 `data/code/api`、`data/code/web`、`data/code/jobs` 的当前受控本地工作区，不能把本地代码描述为已同步、远端最新或具有其他同步新鲜度。
+手动审查不会调用同步脚本或同步命令，不读取 `.env`、仓库 URL、凭据或任何同步结果，也不生成 HTML 或发送邮件。它只使用当前已校验注册表中所选项目的 `code_dir` 受控本地工作区，不能把本地代码描述为已同步、远端最新或具有其他同步新鲜度。
 
 请求必须明确给出 `date`、`date-range` 或完整提交 SHA；三者都没有时立即拒绝，不得默认审查全部历史。还可组合项目、分支、文件和目录过滤：
 
 ```text
-/code-review project=api date=2026-07-13
-/code-review project=api project=web date-range=2026-07-01,2026-07-13
-/code-review project=jobs commit=<40位小写十六进制SHA> file=src/example.py
+/code-review project=<project_id> date=2026-07-13
+/code-review project=<project_id_1> project=<project_id_2> date-range=2026-07-01,2026-07-13
+/code-review project=<project_id> commit=<40位小写十六进制SHA> file=src/example.py
 ```
 
 同类条件取并集，不同类条件取交集，文件和目录先合并为路径并集。每个所选项目开始审查时，先使用允许的强隔离 `git log` 按全部非路径条件读取实际完整 SHA、Author Date 和 Author Email；每个 SHA 再校验为 40 位小写十六进制并在内存中冻结，后续不得重新解析可变 HEAD、branch 或 ref。无法固定实际 SHA 时只跳过该项目。
@@ -154,6 +161,7 @@ HTML 只能忠实呈现对应 Markdown，不能增加、删除、重分类或弱
 | 失败位置 | 处理方式 |
 | --- | --- |
 | 某些项目同步失败、缺失、畸形或不可信 | 列出逐项目原因，跳过失败项目；仍有可信成功项目时继续审查并报告部分失败 |
+| 项目 HTTP 或 HTTPS 凭据为空、重复、缺一项、过长、含控制字符，或用于非 HTTP/HTTPS URL | 在任何网络访问前以固定脱敏中文说明只标记该项目失败；其他独立项目继续，不回显配置值 |
 | 零可信成功项目 | 报告全部失败，停止审查、HTML 和邮件，不使用任何旧状态补位 |
 | 工作区有未提交内容 | 对应项目同步失败；不清理、不暂存，也不把未提交内容作为固定提交证据 |
 | 手动审查无法从受控本地项目固定实际 SHA | 跳过该项目，不改用同步结果、可变 HEAD 或未提交内容补位，也不声称同步新鲜度 |
@@ -185,10 +193,16 @@ Windows Task Scheduler 只需创建一个日报任务，起始目录设为本仓
 
 运行前确认：
 
-* literal `python` 命令实际指向 Python 3.11 或更高版本。
+* `./.venv/Scripts/python.exe` 使用 Python 3.11 或更高版本。
 * OpenCode 从仓库根目录启动，修改 Skill 后已重启进程。
-* `.env` 只包含三个固定项目 URL 键、规范用户/领导映射和 SMTP 配置，没有被模型读取或写入报告。
-* 项目 URL、邮件与身份配置只来自 `.env`，没有通过进程环境变量或命令参数补充、覆盖。
+* 项目成员、路径、默认分支和仓库 URL 配置键只来自当前 `project-registry.yaml`，没有用固定项目列表、目录扫描、Git remote 或旧状态补充。
+* `.env` 只包含注册表所引用的项目 URL、可选的成对 HTTP 或 HTTPS 凭据、规范用户/领导映射和 SMTP 配置，没有被模型或命令读取，也没有写入同步结果或报告。
+* 项目凭据两项都不存在时匿名访问；需要认证时只为 HTTP 或 HTTPS URL 同时填写派生的 `USERNAME` 和 `PASSWORD` 同级键，不使用有效空值，并确认同级键唯一、每项不超过 1024 个 Unicode 码点且不含 Unicode `Cc` 类控制字符。
+* 使用 HTTP 凭据表示接受缺少 TLS 保护的风险，凭据和仓库传输可能被明文窃听或篡改；应优先迁移至 HTTPS。
+* Hisense 凭据手动填写在 `PROJECT_HISENSE_IDS_APP_REPO_USERNAME` 和 `PROJECT_HISENSE_IDS_APP_REPO_PASSWORD`，特殊字符作为 dotenv 值处理，不嵌入或 URL 编码进仓库 URL。
+* Git 凭据只由受信同步脚本通过临时一次性 `GIT_ASKPASS` 提供给精确绑定 origin 的 clone、fetch 或 pull。origin 按协议、规范化主机名和有效端口匹配，HTTP 与 HTTPS 默认端口分别为 80 和 443，跨协议始终视为不同 origin；携带凭据的 HTTP 调用设置 `http.followRedirects=false`。
+* 秘密不进入仓库 URL、命令行参数、七字段同步结果、报告或持久 Git 配置；同步直接结果不增加认证字段或配置值。
+* 项目 URL、凭据、邮件与身份配置只由受信脚本按职责从 `.env` 读取，没有通过模型、OpenCode 命令或命令参数读取、补充或覆盖。
 * `/daily-review` 每次直接同步一次，只消费本次返回的可信项目结果。
 * `/code-review` 不同步，只固定受控本地项目的实际 SHA，且不声明同步新鲜度。
 * 不可信的源码、提交元数据、邮箱、路径、规范和同步输出只作为数据，不拼接进 Shell 或 PowerShell 命令。

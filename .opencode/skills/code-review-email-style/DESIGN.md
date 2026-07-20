@@ -1,119 +1,451 @@
-# 代码审查邮件设计系统
+---
+version: alpha
+name: Cohere-design-analysis
+description: Cohere's 2026 web system is a controlled enterprise AI interface built from stark white editorial space, deep green-black product bands, soft mineral surfaces, rounded media cards, and a distinctive type split between monospaced-feeling display headlines and precise Unica77 UI text.
 
-## 1. 设计目标
+colors:
+  primary: "#17171c"
+  cohere-black: "#000000"
+  ink: "#212121"
+  deep-green: "#003c33"
+  dark-navy: "#071829"
+  canvas: "#ffffff"
+  soft-stone: "#eeece7"
+  pale-green: "#edfce9"
+  pale-blue: "#f1f5ff"
+  hairline: "#d9d9dd"
+  border-light: "#e5e7eb"
+  card-border: "#f2f2f2"
+  muted: "#93939f"
+  slate: "#75758a"
+  body-muted: "#616161"
+  action-blue: "#1863dc"
+  focus-blue: "#4c6ee6"
+  coral: "#ff7759"
+  coral-soft: "#ffad9b"
+  form-focus: "#9b60aa"
+  on-primary: "#ffffff"
+  on-dark: "#ffffff"
+  error: "#b30000"
 
-生成物采用“技术审查卷宗”视觉语言：冷静、精确、层级清楚，重点突出风险与证据，不使用通用 SaaS 卡片墙、装饰性渐变或大面积高饱和色。
+typography:
+  hero-display:
+    fontFamily: CohereText
+    fontSize: 96px
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: -1.92px
+  product-display:
+    fontFamily: CohereText
+    fontSize: 72px
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: -1.44px
+  section-display:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 60px
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: -1.2px
+  section-heading:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 48px
+    fontWeight: 400
+    lineHeight: 1.2
+    letterSpacing: -0.48px
+  card-heading:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 32px
+    fontWeight: 400
+    lineHeight: 1.2
+    letterSpacing: -0.32px
+  feature-heading:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 24px
+    fontWeight: 400
+    lineHeight: 1.3
+    letterSpacing: 0
+  body-large:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0
+  body:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: 0
+  button:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 14px
+    fontWeight: 500
+    lineHeight: 1.71
+    letterSpacing: 0
+  caption:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0
+  mono-label:
+    fontFamily: CohereMono
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0.28px
+  micro:
+    fontFamily: Unica77 Cohere Web
+    fontSize: 12px
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0
 
-设计必须同时满足：
+rounded:
+  xs: 4px
+  sm: 8px
+  md: 16px
+  lg: 22px
+  xl: 30px
+  pill: 32px
+  full: 9999px
 
-- 输入 Markdown 是唯一事实来源，视觉结构不创造新事实。
-- HTML 可直接作为邮件正文，所有关键样式使用内联 CSS。
-- HTML 文件必须以 UTF-8 写入；禁止输出投递入口拒绝的 `<meta>`，邮件字符集由受信投递入口的 MIME `charset=utf-8` 声明。
-- 禁用脚本、事件处理器、表单、远程资源、外部字体和跟踪能力。
-- 交互只能使用默认展开的原生 `<details>` 渐进增强；交互失效后全部事实仍按原顺序可读。
-- 颜色只辅助文字标签，不能单独承载严重级别或状态。
+spacing:
+  xxs: 2px
+  xs: 6px
+  sm: 8px
+  md: 12px
+  lg: 16px
+  xl: 24px
+  xxl: 32px
+  section: 80px
 
-## 2. 视觉方向
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 12px 24px
+  button-secondary:
+    backgroundColor: transparent
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.xs}"
+    padding: 8px 0
+  button-pill-outline:
+    backgroundColor: transparent
+    textColor: "{colors.primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.xl}"
+    padding: 6px 12px
+  announcement-bar:
+    backgroundColor: "{colors.cohere-black}"
+    textColor: "{colors.on-dark}"
+    typography: "{typography.micro}"
+    height: 36px
+  hero-photo-card:
+    backgroundColor: "{colors.canvas}"
+    rounded: "{rounded.lg}"
+  agent-console-card:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-dark}"
+    rounded: "{rounded.sm}"
+    padding: 24px
+  trust-logo-strip:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.caption}"
+  capability-card:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.xs}"
+    padding: 24px
+  dark-feature-band:
+    backgroundColor: "{colors.deep-green}"
+    textColor: "{colors.on-dark}"
+    rounded: "{rounded.lg}"
+    padding: 80px
+  product-card:
+    backgroundColor: "{colors.soft-stone}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.sm}"
+    padding: 32px
+  blog-filter-chip:
+    backgroundColor: transparent
+    textColor: "{colors.coral}"
+    typography: "{typography.card-heading}"
+    rounded: "{rounded.sm}"
+    padding: 8px 14px
+  research-table:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body-large}"
+  contact-form-card:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.lg}"
+    padding: 32px
+  footer-newsletter:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-dark}"
+    typography: "{typography.micro}"
+---
 
-- **基调**：深墨绿色页眉、暖灰画布、纸白正文、石板灰文字。
-- **密度**：摘要紧凑，发现详情宽松；避免每段都套独立卡片。
-- **深度**：主容器只使用细边框和单层轻阴影，内部主要依靠分隔线、留白和左侧色轨建立层级。
-- **形状**：主容器 `12px` 圆角，内部区块 `6px` 至 `8px` 圆角，标签 `4px` 圆角；不使用胶囊形状。
-- **字体**：只使用系统字体。正文优先中文系统无衬线，路径与代码使用系统等宽字体。
+## Overview
 
-## 3. 颜色令牌
+Cohere's current web presence feels like a sober enterprise AI command center with editorial restraint. The home page opens on a huge typographic declaration over a white canvas, then uses photography, dark product mockups, trust logos, and generous empty space to make AI infrastructure feel controlled rather than speculative. Product pages invert the tone into deep green-black or dark navy bands, while blog and research pages move toward publishing-system clarity: large filters, thin rules, dense lists, and pale technical backgrounds.
 
-以下值可直接复制到元素的 `style` 属性，不得临时发明近似颜色。
+What makes the system distinctive is the mix of austere black-and-white UI with bursts of tactile brand imagery. The site avoids decorative chrome in the normal interface; color arrives through photography, abstract 3D media, coral blog taxonomy chips, blue research links, and dark product environments. Cards are rounded but not cute. Type is large, tight, and almost monospaced in spirit, creating a research-lab cadence across marketing, product, and editorial surfaces.
 
-| 令牌 | 值 | 用途 |
+**Key Characteristics:**
+- Monumental display headlines with very tight line height and negative tracking.
+- White editorial canvases interrupted by deep green, dark navy, and image-led CTA bands.
+- Rounded media cards and product cards, usually 8px to 22px.
+- Pill CTAs in near-black or white, with most secondary actions rendered as underlined text links.
+- Trust-logo strips with monochrome partner marks and very wide vertical spacing.
+- Agent-console mockups using dark panels, small status chips, and product integration badges.
+- Blog and research surfaces with prominent taxonomy chips, long rule-separated lists, and search fields.
+
+## Colors
+
+### Brand & Accent
+
+- **Cohere Black** (`#000000`): Announcement bar, highest-contrast text, and the global brand anchor.
+- **Near-Black Primary** (`#17171c`): Primary CTA buttons, dark footer, and deep UI cards.
+- **Deep Enterprise Green** (`#003c33`): Product hero bands for North and Command-style dark sections.
+- **Dark Navy** (`#071829`): Financial-services and security-oriented solution bands.
+- **Action Blue** (`#1863dc`): Editorial links, pagination, and secondary action emphasis.
+- **Coral** (`#ff7759`): Blog category chips, taxonomy outlines, and warm product markers.
+- **Soft Coral** (`#ffad9b`): Pale chip borders and segmented article-label details.
+
+### Surface & Background
+
+- **Canvas White** (`#ffffff`): Dominant page background and form/card surface.
+- **Soft Stone** (`#eeece7`): Product cards, testimonial placeholders, and warm neutral surface blocks.
+- **Pale Green Wash** (`#edfce9`): North page section backdrop behind stacked dark capability panels.
+- **Pale Blue Wash** (`#f1f5ff`): Blog CTA surface behind abstract 3D imagery.
+- **Card Border** (`#f2f2f2`): Softest card containment line.
+
+### Text & Rules
+
+- **Ink** (`#212121`): Default body text and most link text on light backgrounds.
+- **Muted Slate** (`#93939f`): Footer links, dates, metadata, and de-emphasized labels.
+- **Slate** (`#75758a`): Research separators and tertiary text.
+- **Hairline** (`#d9d9dd`): Standard list rules and section dividers.
+- **Border Light** (`#e5e7eb`): Secondary divider and utility rule.
+
+### Semantic
+
+- **Focus Blue** (`#4c6ee6`): Keyboard focus and ring color.
+- **Form Focus Violet** (`#9b60aa`): Focus border for text inputs.
+- **Error Red** (`#b30000`): Extracted ring/shadow color associated with validation-like states.
+
+### Gradient System
+
+Cohere does not use gradients as a generic UI fill. Gradients and color fields are media-led: abstract 3D hero imagery, deep blue open-science particle fields, red-orange product video posters, and dark green-to-black product environments. Keep UI surfaces flat; reserve gradient richness for large media panels and CTA image bands.
+
+## Typography
+
+### Font Family
+
+- **Display**: `CohereText`, falling back to `Space Grotesk`, `Inter`, `ui-sans-serif`, and `system-ui`.
+- **Body/UI**: `Unica77 Cohere Web`, falling back to `Inter`, `Arial`, `ui-sans-serif`, and `system-ui`.
+- **Technical labels**: `CohereMono`, falling back to `Arial`, `ui-sans-serif`, and `system-ui`.
+- **Icons**: Cohere uses custom icon fonts and thin-line geometric illustrations.
+
+### Hierarchy
+
+| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
+|---|---|---:|---:|---:|---:|---|
+| Hero Display | CohereText | 96px | 400 | 1.00 | -1.92px | Home page declaration scale. |
+| Product Display | CohereText | 72px | 400 | 1.00 | -1.44px | Product and research hero headlines. |
+| Section Display | Unica77 | 60px | 400 | 1.00 | -1.2px | Large product-page headings. |
+| Section Heading | Unica77 | 48px | 400 | 1.20 | -0.48px | Split hero and CTA headings. |
+| Card Heading | Unica77 | 32px | 400 | 1.20 | -0.32px | Feature card and list section titles. |
+| Feature Heading | Unica77 | 24px | 400 | 1.30 | 0 | Cards, filters, and article titles. |
+| Body Large | Unica77 | 18px | 400 | 1.40 | 0 | Lead text and larger paragraphs. |
+| Body | Unica77 | 16px | 400 | 1.50 | 0 | Default copy and link text. |
+| Button | Unica77 | 14px | 500 | 1.71 | 0 | Compact CTA labels. |
+| Caption | Unica77 | 14px | 400 | 1.40 | 0 | Metadata and small explanatory text. |
+| Mono Label | CohereMono | 14px | 400 | 1.40 | 0.28px | Uppercase technical labels. |
+| Micro | Unica77 | 12px | 400 | 1.40 | 0 | Footer, nav microcopy, and small links. |
+
+### Principles
+
+- Use massive type sparingly; Cohere pages often have one oversized headline and then settle into restrained 16px-24px UI copy.
+- Keep display type tight. Hero copy should feel compact and carved, not airy.
+- Avoid heavy bold weights. Size, spacing, and surface contrast do most of the hierarchy work.
+- Use uppercase mono labels for category and system markers, especially on product and research pages.
+- Editorial pages can use coral chips and blue links, but the base typography remains black and measured.
+
+## Layout
+
+### Spacing System
+
+The system uses an 8px base with many one-off alignment values: `2px`, `6px`, `8px`, `10px`, `12px`, `16px`, `20px`, `22px`, `24px`, `28px`, `32px`, `36px`, `40px`, `56px`, `60px`, `64px`, and `80px`.
+
+Large sections rely on dramatic vertical breathing room. The home page places a trust-logo strip far below the hero media. Product pages often hold dark panels inside fields of empty white space, then transition to dense forms or footers only near the end.
+
+### Grid & Container
+
+- Global nav uses a three-zone layout: logo left, menu centered, sign-in/CTA right.
+- Home hero is centered text above a two-card media composition: a wide product mockup card beside a narrower photography card.
+- Feature sections commonly use 3-column cards on desktop.
+- Product pages alternate centered hero blocks, trust-logo strips, large single-feature bands, and 2- or 3-column card grids.
+- Research pages use full-width lists with date and chip columns instead of decorative cards.
+- Forms use two-column input rows inside a rounded white card on dark or stone section backgrounds.
+
+### Whitespace Philosophy
+
+Cohere uses whitespace as a trust signal. Large empty intervals separate the brand claim, customer proof, product proof, and CTA. Dense content appears only where it serves the information architecture: research paper rows, blog card grids, and contact form fields.
+
+## Elevation & Depth
+
+Cohere is mostly flat. Depth comes from surface alternation, media contrast, rounded corners, and thin borders rather than drop shadows.
+
+| Level | Treatment | Use |
 |---|---|---|
-| `canvas` | `#F3F1EC` | 邮件外层背景 |
-| `paper` | `#FFFFFF` | 主内容背景 |
-| `ink-strong` | `#17211F` | 标题与主要正文 |
-| `ink` | `#33413E` | 正文 |
-| `ink-muted` | `#64726E` | 辅助说明 |
-| `line` | `#D9DFDC` | 分隔线与边框 |
-| `line-soft` | `#E9EDEA` | 次级分隔线 |
-| `brand` | `#174F46` | 页眉、链接与焦点色 |
-| `brand-soft` | `#E8F1EE` | 摘要背景 |
-| `code-bg` | `#18201F` | 代码块背景 |
-| `code-ink` | `#E7EFEC` | 代码块文字 |
-| `blocker-high` | `#8A1C1C` | `BLOCKER`、`HIGH` 文字与色轨 |
-| `blocker-high-bg` | `#FFF1F0` | `BLOCKER`、`HIGH` 背景 |
-| `medium` | `#8A4B08` | `MEDIUM` 文字与色轨 |
-| `medium-bg` | `#FFF8E8` | `MEDIUM` 背景 |
-| `low` | `#315A75` | `LOW` 文字与色轨 |
-| `low-bg` | `#EFF6FA` | `LOW` 背景 |
-| `advisory` | `#596663` | `ADVISORY` 文字与色轨 |
-| `advisory-bg` | `#F5F7F6` | `ADVISORY` 背景 |
+| Flat | No shadow, white or dark field | Hero copy, research lists, editorial surfaces |
+| Bordered | 1px `#d9d9dd`, `#e5e7eb`, or dark translucent rules | Research rows, forms, pale cards, footer inputs |
+| Media Lift | Rounded image or video over contrasting section color | Hero photo cards, product videos, CTA imagery |
+| Dark Product Field | Deep green or navy full-width band | Command, North, financial services, security sections |
 
-## 4. 排版与间距
+## Shapes
 
-- 文档头：可使用只包含 `<title>` 的 `<head>`；`<title>` 复用输入中的报告标题并执行文本转义。禁止 `<meta>`、远程引用和内嵌样式。
-- 外层：`margin:0; padding:0; background:#F3F1EC;`。
-- 主容器：`width:100%; max-width:1000px;`，桌面端外边距 `24px auto`，内容内边距以 `32px` 为主。
-- `h1`：`28px`、`700`、`1.25` 行高，使用页眉中的白色文字，并用 `text-wrap:balance` 渐进增强标题平衡。
-- `h2`：`20px`、`700`、`1.35` 行高，顶部间距 `32px`，并用 `text-wrap:balance` 渐进增强标题平衡。
-- `h3`：`16px`、`700`、`1.4` 行高，并用 `text-wrap:pretty` 渐进增强中文断行。
-- 正文：`15px`、`1.7` 行高，颜色使用 `ink`；较长中文说明可使用 `text-wrap:pretty`，但不能依赖该属性隐藏内容。
-- 标签：`12px`、`700`、`0.04em` 字间距，不使用全大写转换覆盖输入原文。
-- 代码：`13px`、`1.65` 行高，块级代码允许横向滚动并优先自然换行，不截断内容。
-- 行内路径、SHA、标识和其他长技术文本必须同时设置 `overflow-wrap:anywhere; word-break:break-all;`，只改变视觉换行，不改变字符内容。
-- 基础间距单位为 `4px`；优先使用 `8px`、`12px`、`16px`、`24px`、`32px`。
+### Radius Scale
 
-## 5. 组件规则
+| Token | Value | Role |
+|---|---:|---|
+| `xs` | 4px | Small images, search fields, article thumbnails, utility elements |
+| `sm` | 8px | Blog chips, cards, small media, dialogs |
+| `md` | 16px | Medium product cards and grouped blocks |
+| `lg` | 22px | Signature media-card and soft placeholder radius |
+| `xl` | 30px | Research/topic filter pills |
+| `pill` | 32px | Primary CTA buttons |
+| `full` | 9999px | Round status elements and fully pill-shaped controls |
 
-### 页眉
+### Image Treatment
 
-- 使用 `brand` 纯色背景和顶部 `4px` 深色边线，不使用渐变、背景图或装饰图标。
-- 只显示输入中已有的报告标题、用户、窗口等事实；没有的字段不补占位值。
-- 标题与元数据之间依靠字号、颜色和间距区分，不加入营销文案。
-- 日期窗口在窄屏不能自然容纳时，将两个时间端点分别放入不换行的 `<span>`；范围分隔词必须与后一端点处于同一组，避免“至”单独留在行尾。
+Images are not decorative backdrops for text except in CTA bands. Most imagery sits as rounded cards with visible corners: product videos, enterprise photography, article thumbnails, and abstract 3D renders. The dominant radii are 8px and 22px.
 
-### 摘要带
+## Components
 
-- 使用一个连续的两列键值数据表格，每个输入已有的摘要标签和值占一行并保持原顺序；整表使用统一浅色背景形成摘要带，不为每个数字创建独立卡片。
-- 只展示输入已有的统计名称和值，不推导比例、趋势、结论或新状态。
-- 数字启用 `font-variant-numeric:tabular-nums`，不能改变数字文本。
+### **`button-primary`**
 
-### 章节
+Near-black or white pill CTA, depending on surface contrast. Uses 14px-16px Unica77, 12px 24px padding, and a 32px pill radius. This is the primary action style for "Request a demo", "Submit", and hero CTAs.
 
-- 章节依靠标题、短色轨和底部分隔线组织，不把每个章节变成独立白卡片。
+### **`button-secondary`**
 
-### 发现
+Text-only action link, usually underlined or rule-aligned, with no filled background. Used for "Explore products", "Try the Playground", newsletter signup, and secondary hero actions.
 
-- 每条发现使用左侧 `4px` 严重级别色轨、浅色背景和明确的原始级别文字。
-- 项目、提交、类别、文件与行范围、证据、问题、影响、建议保持输入字段和值的对应关系。
-- `BLOCKER` 与 `HIGH` 始终静态展开，不放入可折叠容器。
-- 每条字段完整的 `MEDIUM`、`LOW`、`ADVISORY` 发现必须使用带 `open` 属性的 `<details>`；`<summary>` 只能复用该发现已有的级别、标题或定位信息。输入没有这些级别的完整发现时不得为制造交互而包装其他内容。
-- 不支持 `<details>` 的客户端必须仍显示完整内容，因此不能使用任何样式隐藏其子内容。
+### **`button-pill-outline`**
 
-### 失败、跳过与未知项
+Outlined pill control with transparent fill, 1px dark border, and 30px radius. Used for research filters, topic tags, and lightweight taxonomy controls.
 
-- 使用中性边框和明确的原始状态文字，不把失败样式伪装成成功或低风险。
-- 不添加勾选图标、成功徽章或推断性说明。
+### **`announcement-bar`**
 
-### 表格与代码
+Full-width black strip above the nav, 36px tall, centered microcopy with an underlined "Learn more" link and a close control at the far right.
 
-- 数据表格保留表头，边框使用 `line`，表头背景使用 `brand-soft`。
-- 一至四列的表格保留数据表格语义，使用 `width:100%; table-layout:fixed;`，并让所有长技术文本可在单元格内换行。
-- 五列及以上的表格按输入行顺序转换为连续记录块；每个记录块按原表头顺序重复“表头：单元格值”，不得删除空值、合并行或改变字段和值的对应关系。
-- 代码块使用 `code-bg` 与 `code-ink`，路径、SHA 和标识不得截断或省略。
+### **`hero-photo-card`**
 
-## 6. 禁止模式
+Rounded media card used in the home hero and solution pages. It combines photography or abstract imagery with an overlaid dark agent-console module. Radius is usually 22px on large cards and 8px on smaller thumbnails.
 
-- 禁止紫蓝渐变、玻璃拟态、发光阴影、装饰性插图、表情符号和图标字体。
-- 禁止三列统计卡片墙、每段一个卡片、过度圆角和无意义大标题。
-- 禁止依赖 `:hover`、媒体查询、CSS Grid、复杂 Flexbox、定位或动画传达信息。
-- 禁止纯视觉按钮；只有已通过白名单校验的输入 `https` 链接可以呈现为链接。
-- 禁止用颜色、图形或布局改写输入中的严重程度、成功状态或事实关系。
+### **`agent-console-card`**
 
-## 7. 降级原则
+Dark product mockup panel showing agent names, status chips, integration badges, prompt fields, and generated response cards. Background is near-black, text is white or muted, and small accent chips use product colors.
 
-当邮件客户端移除圆角、阴影、`max-width`、`details` 行为或其他非关键能力时：
+### **`trust-logo-strip`**
 
-1. 所有内容保持默认展开。
-2. 标题、正文、数据表格和代码仍按输入顺序出现。
-3. 严重级别仍以原始文字显示。
-4. 外部链接失效不影响事实阅读。
-5. 细边框与留白仍足以区分章节和发现。
+Centered copy above a row of monochrome customer logos. It is intentionally quiet: no cards, no borders, just large horizontal spacing and black or white logos depending on the background.
+
+### **`capability-card`**
+
+Content block with thin-line geometric illustration, 24px heading, body copy, and a text link. On light backgrounds, cards often have only a top rule or a subtle image/card relationship rather than full boxing.
+
+### **`dark-feature-band`**
+
+Deep green or navy full-width section used for product capabilities, security claims, and feature breakdowns. Text turns white; cards use darker translucent surfaces, pale borders, and abstract line illustrations.
+
+### **`product-card`**
+
+Warm stone card used for product/model summaries. Typically 3-column on desktop, with 8px radius, generous padding, a small pill button, a divider line, and checkmark bullet rows.
+
+### **`blog-filter-chip`**
+
+Large coral taxonomy chip used on the blog index. Active chips invert to coral fill with dark text; inactive chips use coral outline and pale fill. Typography is oversized relative to typical filters, making the taxonomy a hero-level control.
+
+### **`research-table`**
+
+Rule-separated publication list with title left, topic pills centered, and date right. Rows are tall, white, and border-driven; filters above use many compact outlined pills.
+
+### **`contact-form-card`**
+
+Rounded white form panel set against dark green or warm stone sections. Inputs are rectangular with thin gray borders, 12px-16px padding, and compact labels/placeholders. Submit uses the same near-black pill style as primary CTAs.
+
+### **`footer-newsletter`**
+
+Dark footer subscription block with coral "AI moves fast" label, white headline, muted legal microcopy, a single-line email field, and arrow submit marker. Footer columns use white section labels and muted links.
+
+## Do's and Don'ts
+
+### Do
+
+- Use white canvas as the default surface; introduce dark green or navy as full-width product bands.
+- Keep primary CTAs pill-shaped and near-black on light surfaces.
+- Use 22px radius on major media cards and placeholders.
+- Use coral for editorial taxonomy and small warm accents, not as the main CTA system.
+- Use monochrome trust logos with wide spacing.
+- Use thin-line geometric illustrations for research and capability icons.
+- Let photography and product mockups carry color, while the UI shell stays restrained.
+
+### Don't
+
+- Do not turn coral or blue into broad decorative surface colors.
+- Do not add heavy drop shadows to cards.
+- Do not make every section card-based; Cohere often uses unframed rows, rules, and open space.
+- Do not use rounded cards below 8px for major media.
+- Do not replace the display/body type split with one generic sans-serif voice.
+- Do not render undocumented interaction variants in documentation or previews.
+- Do not use saturated gradients as normal UI backgrounds; keep gradients media-led.
+
+## Responsive Behavior
+
+### Breakpoints
+
+| Name | Width | Key Changes |
+|---|---:|---|
+| Small Mobile | <425px | Single-column cards, compact nav, reduced hero headline scale |
+| Mobile | 425-640px | Hero media stacks, card grids become one column, form rows stack |
+| Large Mobile | 640-768px | Wider one-column layouts with larger media cards |
+| Tablet | 768-1024px | Two-column cards begin, nav spacing tightens |
+| Desktop | 1024-1440px | Full nav, 3-column card grids, split hero compositions |
+| Large Desktop | 1440-2560px | Wide containers and large empty vertical intervals |
+
+### Touch Targets
+
+Primary CTAs and pills meet comfortable touch sizing through 12px-24px padding and pill radii. Research filter chips and blog category chips are larger than standard tags, making dense taxonomy surfaces usable on touch devices.
+
+### Collapsing Strategy
+
+- Nav collapses from full horizontal links to a compact mobile menu.
+- Hero media moves from split cards to stacked cards.
+- Product and capability grids collapse from 3 columns to 2 and then 1.
+- Form fields collapse from paired rows to a single column.
+- Research rows preserve their rule-separated structure but stack metadata below titles on smaller widths.
+
+## Iteration Guide
+
+1. Start from a white canvas or a full-width dark green/navy band; avoid mid-tone page backgrounds unless the screenshot shows a specific CTA/form section.
+2. Use `button-primary` for the single highest-priority action and `button-secondary` for the companion action.
+3. Use `hero-photo-card` or `agent-console-card` when a page needs visual energy; avoid invented dashboard data.
+4. For editorial pages, combine `blog-filter-chip`, `button-pill-outline`, and `research-table` instead of generic marketing cards.
+5. Keep component examples structurally honest: placeholder product frames are better than invented product content.
+
+## Known Gaps
+
+- Exact proprietary font files are not bundled; use the documented fallbacks when implementing externally.
+- Mobile screenshots were not regenerated in this public update, so mobile behavior is documented from the desktop system and existing responsive patterns.
+- Some live pages lazy-load content blocks late; blank testimonial placeholders are documented as placeholder skeleton surfaces rather than filled testimonial cards.

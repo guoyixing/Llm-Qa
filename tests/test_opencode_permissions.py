@@ -23,10 +23,15 @@ EXPECTED_BASH_POSITIVE_RULES: Final[frozenset[tuple[str, str]]] = frozenset(
             "git --no-pager -c core.hooksPath=NUL -c core.fsmonitor=false -c core.pager=cat -c color.ui=false -c diff.external= -c interactive.diffFilter= -c protocol.ext.allow=never show --no-show-signature --no-ext-diff --no-textconv --no-color *",
             "allow",
         ),
+        ("git status", "allow"),
+        ("git status --short", "allow"),
+        ("git add -- *", "allow"),
+        ("git commit -F .git/OPENCODE_COMMIT_MESSAGE", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_project_registry -v", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_sync_safety -v", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_sync_repositories -v", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_command_contracts -v", "allow"),
+        ("./.venv/Scripts/python.exe -m unittest tests.test_opencode_git_permissions -v", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_opencode_permissions -v", "allow"),
         ("./.venv/Scripts/python.exe -m unittest discover -s tests -p \"test_*.py\" -v", "allow"),
         (
@@ -83,6 +88,7 @@ class OpenCodePermissionTests(unittest.TestCase):
         read_rules = cast(dict[str, str], self.permissions["read"])
         self.assertEqual(read_rules["project-registry.yaml"], "allow")
         self.assertEqual(read_rules["opencode.json"], "allow")
+        self.assertEqual(read_rules.get("tests/test_opencode_git_permissions.py"), "allow")
         self.assertNotEqual(read_rules.get("*.yaml"), "allow")
         self.assertNotEqual(read_rules.get("**/*.yaml"), "allow")
 

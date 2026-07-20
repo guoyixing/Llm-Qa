@@ -42,7 +42,7 @@ PROJECT_HISENSE_IDS_APP_REPO_URL=https://example.com/hisense/ids-app.git
 
 合法凭据只通过该项目 clone、fetch 或 pull 期间创建的一次性临时 `GIT_ASKPASS` 提供。每次 Git 调用都关闭终端提示和持久凭据助手，AskPass 只在提示 URL 的精确 origin 与项目绑定 origin 完全一致时应答。origin 由协议、规范化主机名和有效端口组成，HTTP 和 HTTPS 的默认端口分别为 80 和 443；协议不同即视为不同 origin，即使主机名和数值端口相同也不例外。携带凭据的 HTTP clone、fetch 或 pull 每次都设置 `http.followRedirects=false`。临时程序及其路径不含秘密，并在成功、失败、取消或异常退出时删除，同时恢复临时环境。秘密不会进入仓库 URL、命令行参数、同步结果、报告、持久 Git 配置或异常说明；同步直接结果仍严格保持既有七个字段，不增加认证字段或配置值。
 
-不要在 `.env` 中配置项目编号、路径、分支、remote 或代码根目录来覆盖注册表。`code_dir` 必须安全位于仓库内 `data/code/` 下，`standards_dir` 必须安全位于 `standards/projects/` 下，路径不得使用符号链接、重解析点、别名或目录替换。
+不要在 `.env` 中配置项目编号、路径、分支、remote 或代码根目录来覆盖注册表。`code_dir` 必须安全位于仓库内 `data/code/` 下，`standards_dir` 必须安全位于 `standards/projects/` 下，路径不得使用符号链接、重解析点、别名或目录替换。同步器支持独立仓库和 Git linked worktree；linked worktree 的 `.git` 指针、管理目录、common directory 和反向指针必须形成一致关系并全部位于 `data/code/` 内，且不得包含 `config.worktree`。common directory 可以来自普通主工作区的 `.git`，也可以来自位于同一受信边界内的 bare repository。
 
 公共规范位于 `standards/common/`，项目规范目录由当前注册表的 `standards_dir` 指定。审查先加载公共规范，再加载对应项目规范。
 

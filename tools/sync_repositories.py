@@ -121,7 +121,7 @@ def checked_commit(project: ProjectConfig, empty_hooks_path: Path) -> str:
 
 def _checked_repository(project: ProjectConfig, code_root: Path, empty_hooks_path: Path) -> None:
     _ = validate_safe_descendant(code_root, project.local_path, allow_missing=False)
-    reject_unsafe_git_config(project.local_path)
+    reject_unsafe_git_config(project.local_path, code_root)
     root_output = run_git(
         CommandSpec(("rev-parse", "--show-toplevel"), project.local_path), empty_hooks_path
     )

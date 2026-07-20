@@ -6,6 +6,13 @@ projects:
     name: "海信 IDS 应用"
     code_dir: data/code/hisense-ids-app
     standards_dir: standards/projects/hisense-ids-app
-    default_branch: projectDevGroup-specTemplate
+    default_branch: projectDevGroup
     repository_url_config_key: PROJECT_HISENSE_IDS_APP_REPO_URL
+    enabled: true
+  - project_id: hisense-ids-app-spec
+    name: "海信 IDS 应用-结构化分支"
+    code_dir: data/code/hisense-ids-app-spec
+    standards_dir: standards/projects/hisense-ids-app-spec
+    default_branch: projectDevGroup-specTemplate
+    repository_url_config_key: PROJECT_HISENSE_IDS_APP_SPEC_REPO_URL
     enabled: true

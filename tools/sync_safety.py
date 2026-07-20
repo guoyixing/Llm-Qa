@@ -3,8 +3,6 @@ from __future__ import annotations
 import os
 import re
 import subprocess
-from collections.abc import Mapping
-from configparser import ConfigParser, Error as ConfigParserError
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final
@@ -15,12 +13,12 @@ from tools.git_askpass import (
     repository_origin,
     temporary_askpass,
 )
+from tools.git_metadata import reject_unsafe_git_config
 from tools.path_safety import (
     REPARSE_POINT,
     SafetyError,
     prepare_safe_parent,
     project_target,
-    reject_reparse,
     validate_root,
     validate_safe_descendant,
     validate_sync_path,
@@ -28,24 +26,6 @@ from tools.path_safety import (
 from tools.repository_config import RepositoryCredentials
 
 COMMAND_TIMEOUT_SECONDS: Final = 120
-ALLOWED_GIT_OPTIONS: Final = (
-    (
-        "core",
-        frozenset(
-            {
-                "repositoryformatversion",
-                "filemode",
-                "bare",
-                "logallrefupdates",
-                "ignorecase",
-                "symlinks",
-                "precomposeunicode",
-            }
-        ),
-    ),
-    ("remote", frozenset({"url", "fetch"})),
-    ("branch", frozenset({"remote", "merge"})),
-)
 
 
 class GitFailure(Exception):
@@ -228,42 +208,3 @@ def url_identity(url: str) -> str:
         ):
             return f"{scp.group(1)}@{scp.group(2).lower()}:{path}"
     raise SafetyError("仓库 URL 格式无效。")
-
-
-def _inspect_git_config(config: Path) -> None:
-    reject_reparse(config)
-    try:
-        parser = ConfigParser(interpolation=None, strict=False)
-        parser.read_string(config.read_text(encoding="utf-8"))
-    except (ConfigParserError, OSError, UnicodeError) as error:
-        raise SafetyError("本地 Git 配置无法安全读取。") from error
-    defaults: Mapping[str, str] = parser.defaults()
-    if defaults:
-        raise SafetyError("本地 Git 配置包含未声明或危险键。")
-    sections: list[str] = parser.sections()
-    for section in sections:
-        family = re.split(r"[ .]", section, maxsplit=1)[0].lower()
-        allowed = next(
-            (options for name, options in ALLOWED_GIT_OPTIONS if name == family),
-            None,
-        )
-        options: list[str] = parser.options(section)
-        if allowed is None or not set(options).issubset(allowed):
-            raise SafetyError("本地 Git 配置包含未声明或危险键。")
-
-
-def reject_unsafe_git_config(repository: Path) -> None:
-    marker = repository / ".git"
-    reject_reparse(marker)
-    try:
-        if not marker.is_dir():
-            raise SafetyError("本地 Git 元数据不是目录。")
-        common_file = marker / "commondir"
-        worktree_config = marker / "config.worktree"
-        reject_reparse(common_file)
-        reject_reparse(worktree_config)
-        if common_file.exists() or worktree_config.exists():
-            raise SafetyError("本地 Git 元数据包含未声明的 worktree 配置。")
-    except OSError as error:
-        raise SafetyError("本地 Git 元数据无法安全读取。") from error
-    _inspect_git_config(marker / "config")

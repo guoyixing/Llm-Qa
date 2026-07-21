@@ -35,7 +35,7 @@ class OpenCodeGitPermissionTests(unittest.TestCase):
             "--no-textconv --no-color --oneline -10",
             "git add -- opencode.json tests/test_opencode_permissions.py "
             "tests/test_opencode_git_permissions.py",
-            "git commit -F .git/OPENCODE_COMMIT_MESSAGE",
+            "git commit -F OPENCODE_COMMIT_MESSAGE",
         )
 
         # When / Then
@@ -48,12 +48,17 @@ class OpenCodeGitPermissionTests(unittest.TestCase):
         commands = (
             'git commit -m "feat(core): 中文主题"',
             "git commit -F other-message.txt",
-            "git commit -F .git/OPENCODE_COMMIT_MESSAGE --amend",
-            "git commit --amend -F .git/OPENCODE_COMMIT_MESSAGE",
-            "git commit -F .git/OPENCODE_COMMIT_MESSAGE --no-verify",
-            "git commit --no-verify -F .git/OPENCODE_COMMIT_MESSAGE",
-            "git commit -F .git/OPENCODE_COMMIT_MESSAGE -n",
-            "git commit -n -F .git/OPENCODE_COMMIT_MESSAGE",
+            "git commit -F .git/OPENCODE_COMMIT_MESSAGE",
+            "git commit -F ./OPENCODE_COMMIT_MESSAGE",
+            'git commit -F "OPENCODE_COMMIT_MESSAGE"',
+            "git commit -F OPENCODE_COMMIT_MESSAGE --allow-empty",
+            "git commit --allow-empty -F OPENCODE_COMMIT_MESSAGE",
+            "git commit -F OPENCODE_COMMIT_MESSAGE --amend",
+            "git commit --amend -F OPENCODE_COMMIT_MESSAGE",
+            "git commit -F OPENCODE_COMMIT_MESSAGE --no-verify",
+            "git commit --no-verify -F OPENCODE_COMMIT_MESSAGE",
+            "git commit -F OPENCODE_COMMIT_MESSAGE -n",
+            "git commit -n -F OPENCODE_COMMIT_MESSAGE",
             "git diff",
             "git diff --cached",
             "git log --oneline -10",
@@ -68,7 +73,7 @@ class OpenCodeGitPermissionTests(unittest.TestCase):
             "git checkout main",
             "git clean -fd",
             "git restore .",
-            "$env:GIT_MASTER='1'; git commit -F .git/OPENCODE_COMMIT_MESSAGE",
+            "$env:GIT_MASTER='1'; git commit -F OPENCODE_COMMIT_MESSAGE",
         )
 
         # When / Then
@@ -87,7 +92,7 @@ class OpenCodeGitPermissionTests(unittest.TestCase):
             "git status",
             "git status --short",
             "git add -- *",
-            "git commit -F .git/OPENCODE_COMMIT_MESSAGE",
+            "git commit -F OPENCODE_COMMIT_MESSAGE",
         ):
             with self.subTest(pattern=pattern):
                 self.assertIn(pattern, patterns)
@@ -102,7 +107,7 @@ class OpenCodeGitPermissionTests(unittest.TestCase):
                 self.assertIn(pattern, patterns)
                 self.assertGreater(
                     patterns.index(pattern),
-                    patterns.index("git commit -F .git/OPENCODE_COMMIT_MESSAGE"),
+                    patterns.index("git commit -F OPENCODE_COMMIT_MESSAGE"),
                 )
                 self.assertLess(patterns.index(pattern), shell_denial)
         positive_patterns = tuple(
@@ -113,9 +118,11 @@ class OpenCodeGitPermissionTests(unittest.TestCase):
         self.assertFalse(any("GIT_MASTER" in pattern for pattern in positive_patterns))
         self.assertFalse(any("$env:" in pattern for pattern in positive_patterns))
 
-    def test_only_commit_message_file_is_writable_under_git_metadata(self) -> None:
+    def test_workspace_root_commit_message_is_writable_while_git_metadata_is_protected(
+        self,
+    ) -> None:
         # Given
-        message_path = ".git/OPENCODE_COMMIT_MESSAGE"
+        message_path = "OPENCODE_COMMIT_MESSAGE"
         protected_paths = (
             ".git",
             ".git/config",
@@ -123,6 +130,7 @@ class OpenCodeGitPermissionTests(unittest.TestCase):
             ".git/HEAD",
             ".git/refs/heads/main",
             ".git/index",
+            ".git/OPENCODE_COMMIT_MESSAGE",
         )
 
         # When / Then

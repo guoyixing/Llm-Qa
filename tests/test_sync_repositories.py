@@ -8,6 +8,7 @@ from unittest.mock import Mock, patch
 from tools.project_registry import Project
 from tools.sync_repositories import (
     ArgumentError,
+    GitFailure,
     ProjectConfig,
     Status,
     _success,
@@ -191,6 +192,42 @@ class SyncRepositoryTests(unittest.TestCase):
         self.assertEqual(arguments[0], "clone")
         self.assertIn("release", arguments)
         self.assertEqual(arguments[-1], str(config.local_path))
+
+    @patch("tools.sync_repositories.checked_commit", return_value="a" * 40)
+    @patch("tools.sync_repositories._checked_repository")
+    @patch("tools.sync_repositories.run_git")
+    @patch("tools.sync_repositories.validate_safe_descendant")
+    def test_reports_sanitized_fetch_failure_stage(
+        self,
+        _validate_descendant: Mock,
+        run_git_mock: Mock,
+        _checked_repository: Mock,
+        _checked_commit: Mock,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            code_root = Path(temporary) / "data" / "code"
+            local_path = code_root / "example-service"
+            local_path.mkdir(parents=True)
+            repository_url = "https://example.invalid/repository.git"
+            config = ProjectConfig(
+                "example-service",
+                local_path,
+                repository_url,
+                "main",
+                "PROJECT_EXAMPLE_SERVICE_REPO_URL",
+            )
+            run_git_mock.side_effect = (
+                "",
+                "main",
+                repository_url,
+                GitFailure("Git 身份认证失败。"),
+            )
+
+            result = synchronize(config, code_root, Path(temporary) / "hooks")
+
+        self.assertEqual(result["status"], Status.FAILED)
+        self.assertEqual(result["message"], "Git fetch 失败：Git 身份认证失败。")
+        self.assertNotIn(repository_url, result["message"])
 
 
 if __name__ == "__main__":

@@ -130,33 +130,44 @@ def _checked_repository(project: ProjectConfig, code_root: Path, empty_hooks_pat
 
 
 def synchronize(project: ProjectConfig, code_root: Path, empty_hooks_path: Path) -> ResultJson:
+    failure_context = "同步路径校验失败"
     try:
         _ = validate_safe_descendant(code_root, project.local_path, allow_missing=True)
         if not project.local_path.exists():
+            failure_context = "本地仓库目录准备失败"
             _ = prepare_safe_parent(code_root, project.local_path)
             _ = validate_safe_descendant(code_root, project.local_path, allow_missing=True)
             arguments = (
                 "clone", "--origin", REMOTE_NAME, "--branch", project.default_branch,
                 "--single-branch", "--", project.url, str(project.local_path),
             )
+            failure_context = "Git clone 失败"
             _ = run_git(
                 CommandSpec(arguments, project.local_path.parent, secrets=(project.url,),
                             credentials=project.credentials,
                             repository_url=project.url if project.credentials is not None else None),
                 empty_hooks_path,
             )
+            failure_context = "克隆仓库校验失败"
             _checked_repository(project, code_root, empty_hooks_path)
+            failure_context = "克隆提交确认失败"
             return _success(project, checked_commit(project, empty_hooks_path), "仓库已安全克隆。")
+        failure_context = "本地仓库校验失败"
         _checked_repository(project, code_root, empty_hooks_path)
+        failure_context = "工作区状态检查失败"
         if run_git(CommandSpec(("status", "--porcelain=v1"), project.local_path), empty_hooks_path):
             raise GitFailure("工作区存在未提交变更，已拒绝同步。")
+        failure_context = "当前分支检查失败"
         branch = run_git(CommandSpec(("branch", "--show-current"), project.local_path), empty_hooks_path)
         if branch != project.default_branch:
             raise GitFailure("当前分支与注册分支不一致。")
+        failure_context = "origin 绑定检查失败"
         actual_url = run_git(CommandSpec(("remote", "get-url", REMOTE_NAME), project.local_path), empty_hooks_path)
         if url_identity(actual_url) != url_identity(project.url):
             raise GitFailure("仓库 origin 地址与注册配置不一致。")
+        failure_context = "同步前提交确认失败"
         previous = checked_commit(project, empty_hooks_path)
+        failure_context = "Git fetch 失败"
         _ = run_git(
             CommandSpec(("fetch", "--prune", REMOTE_NAME), project.local_path, secrets=(),
                         credentials=project.credentials,
@@ -164,6 +175,7 @@ def synchronize(project: ProjectConfig, code_root: Path, empty_hooks_path: Path)
             empty_hooks_path,
         )
         remote_ref = f"refs/remotes/{REMOTE_NAME}/{project.default_branch}"
+        failure_context = "快进条件检查失败"
         counts = run_git(
             CommandSpec(("rev-list", "--left-right", "--count", f"HEAD...{remote_ref}"), project.local_path),
             empty_hooks_path,
@@ -175,12 +187,18 @@ def synchronize(project: ProjectConfig, code_root: Path, empty_hooks_path: Path)
         pull = CommandSpec(("pull", "--ff-only", REMOTE_NAME, project.default_branch), project.local_path,
                            secrets=(), credentials=project.credentials,
                            repository_url=project.url if project.credentials is not None else None)
+        failure_context = "Git pull 失败"
         _ = run_git(pull, empty_hooks_path)
+        failure_context = "同步后提交确认失败"
         commit = checked_commit(project, empty_hooks_path)
         message = "仓库已仅快进同步。" if previous != commit else "仓库已是最新状态。"
         return _success(project, commit, message)
-    except (GitFailure, SafetyError, OSError, ValueError):
-        return failed(project.project_id, "本地仓库同步未安全完成。", project)
+    except GitFailure as error:
+        return failed(project.project_id, f"{failure_context}：{error.safe_message}", project)
+    except SafetyError:
+        return failed(project.project_id, f"{failure_context}：同步安全检查未通过。", project)
+    except (OSError, ValueError):
+        return failed(project.project_id, f"{failure_context}。", project)
 
 
 def emit(results: tuple[ResultJson, ...]) -> None:

@@ -16,3 +16,10 @@ projects:
     default_branch: projectDevGroup-specTemplate
     repository_url_config_key: PROJECT_HISENSE_IDS_APP_SPEC_REPO_URL
     enabled: true
+  - project_id: hisense-ids-app-need
+    name: "海信 IDS 应用-需求全链路分支"
+    code_dir: data/code/hisense-ids-app-need
+    standards_dir: standards/projects/hisense-ids-app-need
+    default_branch: projectDevGroup-specTemplate
+    repository_url_config_key: PROJECT_HISENSE_IDS_APP_NEED_REPO_URL
+    enabled: true

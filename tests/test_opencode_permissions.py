@@ -26,7 +26,7 @@ EXPECTED_BASH_POSITIVE_RULES: Final[frozenset[tuple[str, str]]] = frozenset(
         ("git status", "allow"),
         ("git status --short", "allow"),
         ("git add -- *", "allow"),
-        ("git commit -F .git/OPENCODE_COMMIT_MESSAGE", "allow"),
+        ("git commit -F OPENCODE_COMMIT_MESSAGE", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_project_registry -v", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_sync_safety -v", "allow"),
         ("./.venv/Scripts/python.exe -m unittest tests.test_sync_repositories -v", "allow"),

@@ -26,12 +26,32 @@ from tools.path_safety import (
 from tools.repository_config import RepositoryCredentials
 
 COMMAND_TIMEOUT_SECONDS: Final = 120
+_SAFE_GIT_FAILURE_MESSAGES: Final = frozenset(
+    {
+        "Git 身份认证配置无效。",
+        "Git 命令超时，未报告成功。",
+        "Git 命令无法安全启动。",
+        "Git 身份认证失败。",
+        "Git 命令未安全完成。",
+        "仓库提交标识无效，未报告成功。",
+        "本地仓库根目录与注册路径不一致。",
+        "工作区存在未提交变更，已拒绝同步。",
+        "当前分支与注册分支不一致。",
+        "仓库 origin 地址与注册配置不一致。",
+        "无法可靠判断仓库是否可仅快进同步。",
+        "本地历史无法仅快进同步，已拒绝更新。",
+    }
+)
 
 
 class GitFailure(Exception):
     def __init__(self, message: str) -> None:
         super().__init__(message)
         self.message: Final = message
+
+    @property
+    def safe_message(self) -> str:
+        return self.message if self.message in _SAFE_GIT_FAILURE_MESSAGES else "Git 操作失败。"
 
 
 class CommandSpecCredentialPairingError(Exception):

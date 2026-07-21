@@ -1,0 +1,141 @@
+<html lang="zh-CN">
+<head><title>合成代码审查邮件参考</title></head>
+<body style="margin:0;padding:0;background:#eeece7;color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-wrap:anywhere;word-break:normal;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;background:#eeece7;">
+<tr><td align="center" style="padding:24px 0;">
+<table role="presentation" width="94%" cellspacing="0" cellpadding="0" style="width:94%;max-width:1280px;table-layout:fixed;border-collapse:separate;background:#ffffff;border:1px solid #d9d9dd;border-radius:16px;overflow:hidden;">
+<tr><td style="padding:32px;background:#17171c;color:#ffffff;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;">
+<colgroup><col style="width:38%;"><col style="width:62%;"></colgroup>
+<tr>
+<td style="padding-right:32px;vertical-align:top;">
+<p style="margin:0 0 8px;color:#93939f;font-size:12px;line-height:1.4;letter-spacing:0.28px;">用户与范围</p>
+<h1 style="margin:0 0 16px;color:#ffffff;font-size:14px;line-height:1.4;font-weight:400;">合成代码审查邮件参考</h1>
+<p style="margin:0 0 6px;color:#93939f;font-size:12px;line-height:1.4;">用户</p>
+<p style="margin:0;color:#ffffff;font-size:32px;line-height:1.2;font-weight:400;letter-spacing:-0.32px;text-wrap:balance;">示例用户（sample-user）</p>
+</td>
+<td style="padding-left:32px;border-left:1px solid #75758a;vertical-align:top;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;">
+<colgroup><col style="width:34%;"><col style="width:66%;"></colgroup>
+<tr>
+<td style="padding:0 16px 16px 0;color:#93939f;font-size:12px;line-height:1.4;vertical-align:top;">时区<br><code style="color:#ffffff;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">Asia/Hong_Kong</code></td>
+<td style="padding:0 0 16px 16px;color:#93939f;font-size:12px;line-height:1.4;vertical-align:top;">审查窗口<br><code style="color:#ffffff;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;"><span style="white-space:nowrap;">[2099-04-12 00:00:00,</span> <span style="white-space:nowrap;">2099-04-14 00:00:00)</span></code></td>
+</tr>
+<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #75758a;color:#93939f;font-size:12px;line-height:1.4;">实际过滤条件<br><span style="color:#ffffff;font-size:14px;"><code style="color:#ffffff;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">date-range=2099-04-12,2099-04-13</code>；项目为 <code style="color:#ffffff;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">sample-project-a</code>、<code style="color:#ffffff;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">sample-project-b</code>，未指定提交、分支、文件或目录过滤</span></td></tr>
+</table>
+</td>
+</tr>
+</table>
+</td></tr>
+<tr><td style="padding:32px;">
+<p style="margin:0 0 24px;padding:12px 16px;background:#f1f5ff;border-left:4px solid #1863dc;color:#212121;font-size:14px;line-height:1.5;">本文件中的身份、日期、项目、提交、发现和全部说明均为合成匿名数据，仅用于展示结构与视觉，不代表任何真实代码审查。</p>
+<h2 style="margin:0 0 12px;color:#212121;font-size:24px;line-height:1.3;font-weight:400;">汇总</h2>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #d9d9dd;background:#ffffff;">
+<colgroup><col style="width:25%;"><col style="width:25%;"><col style="width:25%;"><col style="width:25%;"></colgroup>
+<tr>
+<td style="padding:12px 16px;border-top:2px solid #17171c;border-right:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#17171c;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">2</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#17171c;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">项目</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">实际审查项目数</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:2px solid #17171c;border-right:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#17171c;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">3</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#17171c;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">提交</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">实际审查提交数</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:2px solid #1863dc;border-right:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">0</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#1863dc;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">规范</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">代码规范发现</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:2px solid #1863dc;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">0</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#1863dc;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">可读</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">可读性发现</td></tr></table></td></tr></table></td>
+</tr>
+<tr>
+<td style="padding:12px 16px;border-top:1px solid #d9d9dd;border-right:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">1</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#003c33;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">健壮</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">健壮性发现</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:1px solid #d9d9dd;border-right:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">1</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#003c33;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">性能</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">性能发现</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:1px solid #b30000;border-right:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:15px;line-height:1.3;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:normal;word-break:normal;white-space:normal;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:15px;">HIGH</code> 1 条，<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:15px;">MEDIUM</code> 1 条</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#b30000;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">风险</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">严重级别</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">0</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#75758a;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">失败</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">流程失败数</td></tr></table></td></tr></table></td>
+</tr>
+</table>
+
+<h2 style="margin:32px 0 16px;color:#212121;font-size:32px;line-height:1.2;font-weight:400;letter-spacing:-0.32px;">发现</h2>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:24px;border-left:4px solid #b30000;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<tr><td style="padding:14px 16px;border-bottom:1px solid #d9d9dd;"><h3 style="margin:0;color:#212121;font-size:24px;line-height:1.3;font-weight:400;text-wrap:pretty;"><span style="margin-right:12px;color:#b30000;font-size:14px;font-weight:500;letter-spacing:0.28px;">HIGH：</span>取消信号未传播到后台重试任务</h3></td></tr>
+<tr><td style="padding:0;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-size:14px;">sample-project-a</code>（示例项目甲）</p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">健壮性</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">严重级别<br><code style="color:#b30000;font-size:14px;">HIGH</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">0f1e2d3c4b5a69788796a5b4c3d2e1f001234567</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">sample-a/src/main/java/example/sample/runtime/RetryTaskCoordinator.java:88-116</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p>
+<p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">请求结束时的取消状态没有传入后台重试上下文，已排队的尝试仍会继续执行。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#b30000;font-size:12px;">影响</p><p style="margin:0;">调用方取消后，后台工作仍可能占用执行槽位并写入已过期的合成结果；连续重试会放大无效资源消耗。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">由 <code>scheduleRetry</code> 显式接收取消令牌，在每次尝试和结果写入前检查状态，并让取消路径进入可识别的终态。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p>
+<p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">合成规则 <code>ROBUST-DEMO-002</code>。<code>RetryTaskCoordinator.scheduleRetry</code> 只复制记录标识与等待时长，<code>runAttempt</code> 在重试及写入前均未读取取消状态。</p>
+</td>
+</tr></table></td></tr>
+</table>
+
+<details open style="margin:0 0 24px;border-left:4px solid #ff7759;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<summary style="padding:14px 16px;color:#212121;font-size:24px;line-height:1.3;font-weight:400;cursor:default;text-wrap:pretty;"><span style="margin-right:12px;color:#ff7759;font-size:14px;font-weight:500;letter-spacing:0.28px;">MEDIUM：</span>循环内重复读取同一静态配置</summary>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;border-top:1px solid #d9d9dd;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-size:14px;">sample-project-b</code>（示例项目乙）</p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">性能</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">严重级别<br><code style="color:#ff7759;font-size:14px;">MEDIUM</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">fedcba0987654321fedcba0987654321fedcba09</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">sample-b/src/main/java/example/sample/runtime/RecordBatchLoader.java:61-104</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p>
+<p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">批次中的每条记录都会重新读取相同的只读配置，调用次数随记录数量线性增加。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#ff7759;font-size:12px;">影响</p><p style="margin:0;">在大批次下，重复读取会增加锁竞争与处理延迟；复杂度由一次配置读取变为与记录数相同的读取次数。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">在进入循环前加载一次不可变配置快照并传给 <code>mapRecord</code>；配置失效逻辑继续由提供者统一处理。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p>
+<p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">合成规则 <code>PERF-DEMO-003</code>。<code>RecordBatchLoader.loadBatch</code> 在记录循环内调用 <code>settingsProvider.load</code>，参数固定为 <code>sample.policy</code>，且循环体不会改变该配置。</p>
+</td>
+</tr></table>
+</details>
+
+<h2 style="margin:32px 0 10px;color:#212121;font-size:24px;line-height:1.3;font-weight:400;">结论</h2>
+<p style="margin:0 0 32px;padding:16px 0;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;text-wrap:pretty;">此合成示例覆盖 2 个项目和 3 个提交，呈现 1 条 <code>HIGH</code> 健壮性发现与 1 条 <code>MEDIUM</code> 性能发现；代码规范、可读性和流程失败计数均为 0。以上仅用于演示邮件结构与视觉层级。</p>
+
+<details open style="margin:0;border-top:1px solid #d9d9dd;">
+<summary style="padding:16px 0;color:#212121;font-size:18px;line-height:1.4;font-weight:500;cursor:default;">注册表快照</summary>
+<div style="padding:0 0 16px;color:#616161;font-size:14px;">
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">路径：<code>sample-config/project-registry.yaml</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">版本：<code>1</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">合成快照摘要：<code style="overflow-wrap:anywhere;word-break:break-all;">c0ffee12c0ffee12c0ffee12c0ffee12c0ffee12</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">生效项目：<code>sample-project-a</code>，名称“示例项目甲”，代码目录 <code>sample-data/code/sample-project-a</code>，规范目录 <code>sample-standards/sample-project-a</code>，默认分支 <code>sample-main-a</code>，配置键名 <code>SAMPLE_PROJECT_A_URL</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">生效项目：<code>sample-project-b</code>，名称“示例项目乙”，代码目录 <code>sample-data/code/sample-project-b</code>，规范目录 <code>sample-standards/sample-project-b</code>，默认分支 <code>sample-main-b</code>，配置键名 <code>SAMPLE_PROJECT_B_URL</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">注册表条目错误：无</p>
+</div>
+</details>
+
+<details open style="margin:0;border-top:1px solid #d9d9dd;">
+<summary style="padding:16px 0;color:#212121;font-size:18px;line-height:1.4;font-weight:500;cursor:default;">项目来源与提交</summary>
+<div style="padding:0 0 16px;color:#616161;font-size:14px;">
+<h3 style="margin:0;padding:8px 0;color:#212121;font-size:16px;line-height:1.5;font-weight:500;">示例项目甲（sample-project-a）</h3>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">合成来源状态：示例数据，未执行真实同步</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">固定来源提交：<code style="overflow-wrap:anywhere;word-break:break-all;">a1b2c3d4e5f607182736455463728190abcdef12</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">实际审查提交（1）：<code style="overflow-wrap:anywhere;word-break:break-all;">0f1e2d3c4b5a69788796a5b4c3d2e1f001234567</code></p>
+<h3 style="margin:16px 0 0;padding:8px 0;color:#212121;font-size:16px;line-height:1.5;font-weight:500;">示例项目乙（sample-project-b）</h3>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">合成来源状态：示例数据，未执行真实同步</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">固定来源提交：<code style="overflow-wrap:anywhere;word-break:break-all;">89abcdef0123456789abcdef0123456789abcdef</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">实际审查提交（2）：<code style="overflow-wrap:anywhere;word-break:break-all;">1234567890abcdef1234567890abcdef12345678</code>、<code style="overflow-wrap:anywhere;word-break:break-all;">fedcba0987654321fedcba0987654321fedcba09</code></p>
+</div>
+</details>
+
+<details open style="margin:0;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<summary style="padding:16px 0;color:#212121;font-size:18px;line-height:1.4;font-weight:500;cursor:default;">规范加载与失败</summary>
+<div style="padding:0 0 16px;color:#616161;font-size:14px;">
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">合成公共规范 <code>sample-standards/common/</code> 的代码规范、可读性、健壮性和性能规则均标记为已加载。</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code>sample-project-a</code> 与 <code>sample-project-b</code> 的合成项目规范均标记为已加载，未设置覆盖冲突。</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">身份解析失败：无；未归属提交：无。</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">来源失败：无；报告生成失败：无；流程失败数：0。</p>
+</div>
+</details>
+
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>

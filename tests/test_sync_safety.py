@@ -132,6 +132,10 @@ class GitMetadataSafetyTests(unittest.TestCase):
             encoding="utf-8",
         )
 
+    def append_common_config(self, common_dir: Path, content: str) -> None:
+        with (common_dir / "config").open("a", encoding="utf-8") as config:
+            config.write(content)
+
     def create_linked_worktree(
         self,
         common_dir: Path | None = None,
@@ -183,6 +187,41 @@ class GitMetadataSafetyTests(unittest.TestCase):
         self.write_common_config(common_dir, bare=True)
 
         reject_unsafe_git_config(worktree, self.code_root)
+
+    def test_accepts_push_auto_setup_remote_for_standalone_repository(self) -> None:
+        repository = self.code_root / "standalone"
+        common_dir = repository / ".git"
+        common_dir.mkdir(parents=True)
+        self.write_common_config(common_dir)
+        self.append_common_config(common_dir, "[push]\n\tautoSetupRemote = true\n")
+
+        reject_unsafe_git_config(repository, self.code_root)
+
+    def test_accepts_push_auto_setup_remote_from_linked_common_config(self) -> None:
+        worktree, common_dir, _ = self.create_linked_worktree()
+        self.append_common_config(common_dir, "[push]\n\tautoSetupRemote = true\n")
+
+        reject_unsafe_git_config(worktree, self.code_root)
+
+    def test_rejects_other_push_option(self) -> None:
+        repository = self.code_root / "standalone"
+        common_dir = repository / ".git"
+        common_dir.mkdir(parents=True)
+        self.write_common_config(common_dir)
+        self.append_common_config(common_dir, "[push]\n\tdefault = simple\n")
+
+        with self.assertRaises(SafetyError):
+            reject_unsafe_git_config(repository, self.code_root)
+
+    def test_rejects_mixed_push_options_from_linked_common_config(self) -> None:
+        worktree, common_dir, _ = self.create_linked_worktree()
+        self.append_common_config(
+            common_dir,
+            "[push]\n\tautoSetupRemote = true\n\tdefault = simple\n",
+        )
+
+        with self.assertRaises(SafetyError):
+            reject_unsafe_git_config(worktree, self.code_root)
 
     def test_rejects_linked_worktree_admin_directory_outside_code_root(self) -> None:
         worktree = self.code_root / "linked"

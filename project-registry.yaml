@@ -20,6 +20,13 @@ projects:
     name: "海信 IDS 应用-需求全链路分支"
     code_dir: data/code/hisense-ids-app-need
     standards_dir: standards/projects/hisense-ids-app-need
-    default_branch: projectDevGroup-specTemplate
+    default_branch: features-DDCP-8746
     repository_url_config_key: PROJECT_HISENSE_IDS_APP_NEED_REPO_URL
+    enabled: true
+  - project_id: hisense-ids-app-function
+    name: "海信 IDS 应用-方法库"
+    code_dir: data/code/hisense-ids-app-function
+    standards_dir: standards/projects/hisense-ids-app-function
+    default_branch: features-DDCP-8522
+    repository_url_config_key: PROJECT_HISENSE_IDS_APP_FUNCTION_REPO_URL
     enabled: true

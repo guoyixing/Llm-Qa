@@ -31,6 +31,7 @@ ALLOWED_GIT_OPTIONS: Final = (
     ),
     ("remote", frozenset({"url", "fetch"})),
     ("branch", frozenset({"remote", "merge"})),
+    ("push", frozenset({"autosetupremote"})),
 )
 
 

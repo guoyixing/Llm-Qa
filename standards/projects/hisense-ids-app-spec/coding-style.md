@@ -23,3 +23,14 @@
 - 检查重点：规格书写入口是否调用对应 Handler；`PersistHelper`、规格书模型写方法和查询投影刷新是否出现在对应 Handler 之外；批量导入、审批回调和定时或消息处理是否复制创建、修改、升版或删除逻辑；新增写入口是否绕过既有事务边界。
 - 建议：外层入口只组装对应 Value 对象并调用 Handler 的公开方法；批量场景由批量编排器逐项或批量调用对应 Handler，通用子步骤应下沉为 Handler 内部方法或由 Handler 依赖的专用组件。
 - 来源：`data/code/hisense-ids-app-spec/hisense-app/src/main/java/com/glaway/specification/service/handler/SpecCreateHandler.java:93-129`；`data/code/hisense-ids-app-spec/hisense-app/src/main/java/com/glaway/specification/service/handler/SpecModifyHandler.java:74-108`；`data/code/hisense-ids-app-spec/hisense-app/src/main/java/com/glaway/specification/service/handler/SpecChangeHandler.java:67-108`；`data/code/hisense-ids-app-spec/hisense-app/src/main/java/com/glaway/specification/service/handler/SpecDeleteHandler.java:19-79`；`data/code/hisense-ids-app-spec/hisense-app/src/main/java/com/glaway/specification/service/impl/SpecServiceImpl.java:397-512`
+
+### hisense-ids-app-spec-STYLE-003 禁止 zhangjingli 修改 guoyixing 署名类中的代码
+
+- 标签：hisense-ids-app-spec-STYLE-003
+- 级别：REQUIRED
+- 适用范围：`hisense-ids-app-spec` 项目内的 Java 源码；本次固定提交的 Git Author Email 经受信身份接口唯一解析为规范用户 ID `zhangjingli`，且目标 `class` 具有与该类声明明确关联的类级 Javadoc，其中至少一个 `@author` 标签的完整值去除首尾空白后恰好为 `guoyixing`，变更行位于该类声明范围内。
+- 规则：满足上述全部条件时，`zhangjingli` 不得在该类声明范围内新增、修改或删除代码。新增行按变更后版本判断，删除行按变更前版本判断，修改同时核对变更前后版本，任一侧满足适用条件即纳入。本规则补充 `standards/common/`，不构成覆盖。只有身份、类级 Javadoc 归属、`@author` 精确值和变更行所属类范围均有充分静态证据时，才构成确定性违规；已证明的违规必须报告为 `HIGH`，证据不足时不得生成确定性违规发现。
+- 例外：无。证据不足不属于例外，不得据此生成确定性违规发现。
+- 检查重点：确认固定提交的 Git Author Email 已通过受信身份接口唯一解析为规范用户 ID `zhangjingli`，不得根据姓名、邮箱外观、Javadoc 或代码内容推断身份；确认 Javadoc 确实关联目标 `class`，且至少一个 `@author` 标签的完整值去除首尾空白后与 `guoyixing` 完全相等，不做大小写折叠、别名或部分匹配；新增使用变更后版本，删除使用变更前版本，修改同时使用两侧；若变更处于任一明确匹配的封闭类声明范围内则纳入，无法确认身份、Javadoc 归属或类范围时不生成本规则的确定性发现。
+- 建议：撤销 `zhangjingli` 对该类的代码变更；如类归属约定确已改变，应先依据可定位的正式项目决定更新项目规则与类级 Javadoc，不得通过改写 Git Author Email、代提交、删除或改写 `@author` 规避检查。
+- 来源：用户于 2026-07-24 提出的规则配置请求：“添加一个规则，禁止在类注释中author为guoyixing的类中出现zhangjingli提交的代码，等级为高，添加到hisense的所有项目中”；`AGENTS.md` 第 4、5、10 节；`standards/README.md` 的项目规则模板与级别说明。

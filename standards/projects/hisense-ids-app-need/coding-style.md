@@ -23,3 +23,14 @@
 - 检查重点：检查每个需求聚合或跨聚合写工作流是否只有一个可定位的领域写编排所有者，Controller、Job、Listener、Adapter 和工作流回调中是否直接出现 `PersistHelper` 或等价持久化调用，是否复制多步写入顺序，以及事务边界内的关联写入是否仍由同一所有者组织。当前代码中的 `RawRequirementService`、`InitialRequirementService`、`InitialRequirementAssistService` 和 `RequirementChecklistService` 是定位相应所有者的实现证据与检查示例，不要求实现类名称长期不变。
 - 建议：外层入口只组装领域写编排所有者所需的 Value 或命令对象并调用其公开写方法；重复的持久化子步骤下沉为所有者的私有方法或由其依赖的专用组件，避免形成第二套写流程。
 - 来源：`D:/Workspace/Code/OpenSource/LlmWiki/data/wiki/实体/实体｜hisense-requirement模块.md:23-39`；`D:/Workspace/Code/OpenSource/LlmWiki/data/wiki/实体/实体｜需求清单模块.md:27-37`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirement/service/impl/RawRequirementServiceImpl.java:140-227`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirement/service/impl/RawRequirementServiceImpl.java:281-337`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirement/service/impl/InitialRequirementServiceImpl.java:167-234`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirement/service/impl/InitialRequirementServiceImpl.java:236-310`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirement/service/impl/InitialRequirementAssistServiceImpl.java:588-643`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirement/service/impl/InitialRequirementAssistServiceImpl.java:645-685`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirementlist/service/impl/RequirementChecklistServiceImpl.java:281-335`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirementlist/service/impl/RequirementChecklistServiceImpl.java:592-704`；`data/code/hisense-ids-app-need/hisense-app/src/main/java/com/glaway/requirementlist/service/impl/RequirementChecklistServiceImpl.java:706-800`
+
+### hisense-ids-app-need-STYLE-003 禁止 zhangjingli 修改 guoyixing 署名类中的代码
+
+- 标签：hisense-ids-app-need-STYLE-003
+- 级别：REQUIRED
+- 适用范围：`hisense-ids-app-need` 项目内的 Java 源码；本次固定提交的 Git Author Email 经受信身份接口唯一解析为规范用户 ID `zhangjingli`，且目标 `class` 具有与该类声明明确关联的类级 Javadoc，其中至少一个 `@author` 标签的完整值去除首尾空白后恰好为 `guoyixing`，变更行位于该类声明范围内。
+- 规则：满足上述全部条件时，`zhangjingli` 不得在该类声明范围内新增、修改或删除代码。新增行按变更后版本判断，删除行按变更前版本判断，修改同时核对变更前后版本，任一侧满足适用条件即纳入。本规则补充 `standards/common/`，不构成覆盖。只有身份、类级 Javadoc 归属、`@author` 精确值和变更行所属类范围均有充分静态证据时，才构成确定性违规；已证明的违规必须报告为 `HIGH`，证据不足时不得生成确定性违规发现。
+- 例外：无。证据不足不属于例外，不得据此生成确定性违规发现。
+- 检查重点：确认固定提交的 Git Author Email 已通过受信身份接口唯一解析为规范用户 ID `zhangjingli`，不得根据姓名、邮箱外观、Javadoc 或代码内容推断身份；确认 Javadoc 确实关联目标 `class`，且至少一个 `@author` 标签的完整值去除首尾空白后与 `guoyixing` 完全相等，不做大小写折叠、别名或部分匹配；新增使用变更后版本，删除使用变更前版本，修改同时使用两侧；若变更处于任一明确匹配的封闭类声明范围内则纳入，无法确认身份、Javadoc 归属或类范围时不生成本规则的确定性发现。
+- 建议：撤销 `zhangjingli` 对该类的代码变更；如类归属约定确已改变，应先依据可定位的正式项目决定更新项目规则与类级 Javadoc，不得通过改写 Git Author Email、代提交、删除或改写 `@author` 规避检查。
+- 来源：用户于 2026-07-24 提出的规则配置请求：“添加一个规则，禁止在类注释中author为guoyixing的类中出现zhangjingli提交的代码，等级为高，添加到hisense的所有项目中”；`AGENTS.md` 第 4、5、10 节；`standards/README.md` 的项目规则模板与级别说明。

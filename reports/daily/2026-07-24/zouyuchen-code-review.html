@@ -1,0 +1,246 @@
+<html lang="zh-CN">
+<head><title>代码审查日报</title></head>
+<body style="margin:0;padding:0;background:#eeece7;color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-wrap:anywhere;word-break:normal;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;background:#eeece7;">
+<tr><td align="center" style="padding:24px 0;">
+<table role="presentation" width="94%" cellspacing="0" cellpadding="0" style="width:94%;max-width:1280px;table-layout:fixed;border-collapse:separate;background:#ffffff;border:1px solid #d9d9dd;border-radius:16px;overflow:hidden;">
+<tr><td style="padding:32px;background:#17171c;color:#ffffff;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;">
+<colgroup><col style="width:38%;"><col style="width:62%;"></colgroup>
+<tr>
+<td style="padding-right:32px;vertical-align:top;">
+<p style="margin:0 0 8px;color:#93939f;font-size:12px;line-height:1.4;letter-spacing:0.28px;">用户与范围</p>
+<h1 style="margin:0 0 16px;color:#ffffff;font-size:24px;line-height:1.3;font-weight:400;">代码审查日报</h1>
+<p style="margin:0 0 6px;color:#93939f;font-size:12px;line-height:1.4;">用户</p>
+<p style="margin:0 0 24px;color:#ffffff;font-size:32px;line-height:1.2;font-weight:400;letter-spacing:-0.32px;text-wrap:balance;">邹宇宸（zouyuchen）</p>
+<p style="margin:0 0 6px;color:#93939f;font-size:12px;line-height:1.4;">报告日期</p>
+<p style="margin:0;color:#ffffff;font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;">2026-07-24</p>
+</td>
+<td style="padding-left:32px;border-left:1px solid #75758a;vertical-align:top;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;">
+<colgroup><col style="width:34%;"><col style="width:66%;"></colgroup>
+<tr>
+<td style="padding:0 16px 16px 0;color:#93939f;font-size:12px;line-height:1.4;vertical-align:top;">时区<br><code style="color:#ffffff;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">Asia/Hong_Kong</code></td>
+<td style="padding:0 0 16px 16px;color:#93939f;font-size:12px;line-height:1.4;vertical-align:top;">审查窗口<br><span style="color:#ffffff;font-size:14px;font-variant-numeric:tabular-nums;"><span style="white-space:nowrap;">2026-07-24 00:00:00（含）</span>至 <span style="white-space:nowrap;">2026-07-27 00:00:00（不含）</span></span></td>
+</tr>
+<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #75758a;color:#93939f;font-size:12px;line-height:1.4;">实际过滤条件<br><span style="color:#ffffff;font-size:14px;"><code style="color:#ffffff;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">date-range=2026-07-24,2026-07-26</code>；未指定项目、提交、分支、文件或目录过滤</span></td></tr>
+<tr><td colspan="2" style="padding-top:12px;color:#93939f;font-size:12px;line-height:1.4;">统计口径<br><span style="color:#ffffff;font-size:14px;">同一 SHA 出现在不同注册项目时，按“项目—提交发生项”分别审查和计数</span></td></tr>
+</table>
+</td>
+</tr>
+</table>
+</td></tr>
+<tr><td style="padding:32px;">
+<h2 style="margin:0 0 12px;color:#212121;font-size:24px;line-height:1.3;font-weight:400;">汇总</h2>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #d9d9dd;background:#ffffff;">
+<colgroup><col style="width:25%;"><col style="width:25%;"><col style="width:25%;"><col style="width:25%;"></colgroup>
+<tr>
+<td style="padding:12px 16px;border-top:2px solid #17171c;border-right:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#17171c;font-size:15px;line-height:1.3;font-weight:500;font-variant-numeric:tabular-nums;">4 个；该用户有提交项目：2 个</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#17171c;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">项目</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">本次覆盖项目</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:2px solid #17171c;border-right:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#17171c;font-size:15px;line-height:1.3;font-weight:500;font-variant-numeric:tabular-nums;">24；唯一 SHA：13</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#17171c;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">提交</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">项目—提交发生项</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:2px solid #17171c;border-right:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#17171c;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">6</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#17171c;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">摘要</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">发现合计</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:2px solid #1863dc;border-bottom:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">1</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#1863dc;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">规范</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">代码规范</td></tr></table></td></tr></table></td>
+</tr>
+<tr><td colspan="4" style="padding:0;vertical-align:top;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:33.33%;"><col style="width:33.33%;"><col style="width:33.34%;"></colgroup><tr>
+<td style="padding:12px 16px;border-top:1px solid #d9d9dd;border-right:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">0</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#1863dc;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">可读</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">可读性</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:1px solid #d9d9dd;border-right:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">3</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#003c33;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">健壮</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">健壮性</td></tr></table></td></tr></table></td>
+<td style="padding:12px 16px;border-top:1px solid #d9d9dd;vertical-align:top;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><tr><td height="38" style="height:38px;vertical-align:top;"><strong style="display:block;color:#212121;font-size:32px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;">2</strong></td></tr><tr><td height="20" style="height:20px;padding-top:4px;vertical-align:top;"><table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr><td aria-hidden="true" style="padding-right:8px;color:#003c33;font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.28px;white-space:nowrap;vertical-align:baseline;">性能</td><td style="color:#616161;font-size:14px;line-height:1.4;vertical-align:baseline;">性能</td></tr></table></td></tr></table></td>
+</tr></table>
+</td></tr>
+</table>
+
+<h2 style="margin:32px 0 16px;color:#212121;font-size:32px;line-height:1.2;font-weight:400;letter-spacing:-0.32px;">发现</h2>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:24px;border-left:4px solid #b30000;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<tr><td style="padding:14px 16px;border-bottom:1px solid #d9d9dd;"><h3 style="margin:0;color:#212121;font-size:24px;line-height:1.3;font-weight:400;text-wrap:pretty;"><span style="margin-right:12px;color:#b30000;font-size:14px;font-weight:500;letter-spacing:0.28px;">严重级别：HIGH</span>1. 客户端团队 ID 未与服务端可信范围求交集</h3></td></tr>
+<tr><td style="padding:0;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">hisense-ids-app</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">健壮性</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/service/impl/InitialRequirementAssistServiceImpl.java:274-288</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p>
+<p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">用户请求可达的团队范围由客户端值直接决定，服务端既有当前用户范围未参与收敛。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#b30000;font-size:12px;">影响</p><p style="margin:0;">知道其他团队 ID 的调用方可能读取其无权查看的需求池数据。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">从当前用户上下文取得允许团队集合，对请求 ID 规范化、去重后求交集；存在范围外 ID 时明确拒绝。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p>
+<p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">直接代码证据。当 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">selectedTeamIds</code> 非空时，代码直接拆分并作为查询过滤值，未与 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">planTeamConfigService.getTeamListId(currentUserId)</code> 或服务端生成的可见团队集合求交集。</p>
+</td>
+</tr></table></td></tr>
+</table>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:24px;border-left:4px solid #b30000;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<tr><td style="padding:14px 16px;border-bottom:1px solid #d9d9dd;"><h3 style="margin:0;color:#212121;font-size:24px;line-height:1.3;font-weight:400;text-wrap:pretty;"><span style="margin-right:12px;color:#b30000;font-size:14px;font-weight:500;letter-spacing:0.28px;">严重级别：HIGH</span>2. 挂起提交筛选了与接口契约相反的状态</h3></td></tr>
+<tr><td style="padding:0;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">hisense-ids-app</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">健壮性</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/service/impl/SuspendApplyServiceImpl.java:102-107,410-423</code>；<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/model/value/SuspendApplyItemValue.java:20-22</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p><p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">校验和实际处理对同一状态采用相反语义。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#b30000;font-size:12px;">影响</p><p style="margin:0;">正常 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">yes</code> 请求会得到空 ID 集合并失败，混合请求还可能把表示取消的项目送入挂起流程。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">提交和重提路径统一只选择 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">FLAG_YES</code>，并对状态值做显式枚举校验。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p><p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">公共规则 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">ROBUST-002</code>。DTO 明确定义 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">yes=挂起、no=取消挂起</code>，参数校验也按 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">FLAG_YES</code> 判断挂起项，但提交实现只收集 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">FLAG_NO</code> 项。</p>
+</td>
+</tr></table></td></tr>
+</table>
+
+<details open style="margin:0 0 24px;border-left:4px solid #ff7759;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<summary style="padding:14px 16px;color:#212121;font-size:24px;line-height:1.3;font-weight:400;cursor:default;text-wrap:pretty;"><span style="margin-right:12px;color:#ff7759;font-size:14px;font-weight:500;letter-spacing:0.28px;">严重级别：MEDIUM</span>3. 定时任务在双层循环中逐项发送邮件</summary>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;border-top:1px solid #d9d9dd;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">hisense-ids-app</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">性能</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/job/PlanReqPoolNotifyJob.java:118-166</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p><p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">网络邮件调用在外部数据驱动的双层循环中完全串行执行。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#ff7759;font-size:12px;">影响</p><p style="margin:0;">数据和通知人数增长时，任务时长与邮件压力线性放大，单次慢调用也会阻塞后续全部通知。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">先按收件人或团队聚合，优先使用批量能力；必须逐项发送时使用有界并发、总超时和完整失败汇总。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p><p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">公共规则 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">PERF-002</code>、<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">PERF-006</code>。每条分发记录内再次遍历负责人和管理员，并同步调用 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">EmailUtil.sendEmail</code>；调用次数随“分发记录数 × 每团队通知人数”增长。</p>
+</td>
+</tr></table>
+</details>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:24px;border-left:4px solid #b30000;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<tr><td style="padding:14px 16px;border-bottom:1px solid #d9d9dd;"><h3 style="margin:0;color:#212121;font-size:24px;line-height:1.3;font-weight:400;text-wrap:pretty;"><span style="margin-right:12px;color:#b30000;font-size:14px;font-weight:500;letter-spacing:0.28px;">严重级别：HIGH</span>4. 结构化分支中的挂起状态筛选相反</h3></td></tr>
+<tr><td style="padding:0;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">hisense-ids-app-spec</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">健壮性</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/service/impl/SuspendApplyServiceImpl.java:102-109</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p><p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">合法挂起请求与实际处理条件相反。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#b30000;font-size:12px;">影响</p><p style="margin:0;">正常挂起请求无法发起，混合请求可能处理错误的分发路径。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">改为筛选 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">FLAG_YES</code>，让提交与重新提交共用同一状态筛选函数，并拒绝未知状态。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p><p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">公共规则 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">ROBUST-002</code>。DTO 和校验以 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">FLAG_YES</code> 表示挂起，实际 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">submitSuspendApply</code> 使用 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">FLAG_NO</code> 构造 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">suspendIds</code>。</p>
+</td>
+</tr></table></td></tr>
+</table>
+
+<details open style="margin:0 0 24px;border-left:4px solid #ff7759;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<summary style="padding:14px 16px;color:#212121;font-size:24px;line-height:1.3;font-weight:400;cursor:default;text-wrap:pretty;"><span style="margin-right:12px;color:#ff7759;font-size:14px;font-weight:500;letter-spacing:0.28px;">严重级别：MEDIUM</span>5. 审批中申请被无界全量读取</summary>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;border-top:1px solid #d9d9dd;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">hisense-ids-app-spec</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">性能</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/service/impl/SuspendApplyServiceImpl.java:475-497</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p><p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">每次提交都会加载系统中全部审批中申请。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#ff7759;font-size:12px;">影响</p><p style="margin:0;">查询量和内存占用随全局待审批数量持续增长，并发提交时进一步放大数据库和应用资源消耗。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">将关系规范化并按 ID 批量查询；至少增加数据库侧交集条件、索引和有界分页。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p><p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">公共规则 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">PERF-005</code>。代码只按 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">APPROVING</code> 和未删除过滤后直接 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">.query()</code>，再把所有记录中的逗号分隔 ID 展开到内存；读取未按本次 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">distributionPathIds</code> 收敛，也没有分页或条数上限。</p>
+</td>
+</tr></table>
+</details>
+
+<details open style="margin:0 0 32px;border-left:4px solid #1863dc;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<summary style="padding:14px 16px;color:#212121;font-size:24px;line-height:1.3;font-weight:400;cursor:default;text-wrap:pretty;"><span style="margin-right:12px;color:#1863dc;font-size:14px;font-weight:500;letter-spacing:0.28px;">严重级别：LOW</span>6. 新增代码直接书写全限定类名</summary>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;border-top:1px solid #d9d9dd;"><colgroup><col style="width:28%;"><col style="width:72%;"></colgroup><tr>
+<td style="padding:16px;background:#eeece7;vertical-align:top;">
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">项目<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:14px;">hisense-ids-app-spec</code></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">类别<br><span style="color:#212121;font-size:14px;">代码规范</span></p>
+<p style="margin:0 0 12px;color:#616161;font-size:12px;">提交<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;color:#616161;font-size:12px;">文件与行范围<br><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/controller/InitialRequirementController.java:45-64</code>；<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/service/impl/PlanTeamConfigServiceImpl.java:375-552</code>；<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;font-size:12px;overflow-wrap:anywhere;word-break:break-all;">hisense-app/src/main/java/com/glaway/requirement/service/impl/InitialRequirementServiceImpl.java:152-159</code></p>
+</td>
+<td style="padding:16px 24px;vertical-align:top;">
+<p style="margin:0 0 6px;color:#616161;font-size:12px;">问题说明</p><p style="margin:0 0 16px;color:#212121;font-size:18px;line-height:1.4;text-wrap:pretty;">类型引用没有集中到 import 区域。</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;table-layout:fixed;border-collapse:collapse;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup><tr>
+<td style="padding:0 16px 0 0;vertical-align:top;"><p style="margin:0 0 6px;color:#1863dc;font-size:12px;">影响</p><p style="margin:0;">代码噪声增加，依赖难以集中识别，并违反强制编码规范。</p></td>
+<td style="padding:0 0 0 16px;border-left:1px solid #d9d9dd;vertical-align:top;"><p style="margin:0 0 6px;color:#003c33;font-size:12px;">建议</p><p style="margin:0;">添加对应 import 并使用简单类名，仅在真实同名冲突处保留全限定名称。</p></td>
+</tr></table>
+<p style="margin:16px 0 6px;color:#616161;font-size:12px;">规则或代码证据</p><p style="margin:0;padding:12px;background:#f1f5ff;color:#212121;font-size:14px;">公共规则 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">STYLE-005</code>。新增字段、局部变量和表达式直接使用 <code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">com.glaway...</code>、<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">java.util...</code>、<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">cn.hutool...</code> 等全限定类型，未见简单类名冲突例外。</p>
+</td>
+</tr></table>
+</details>
+
+<details open style="margin:0;border-top:1px solid #d9d9dd;">
+<summary style="padding:16px 0;color:#212121;font-size:18px;line-height:1.4;font-weight:500;cursor:default;">注册表快照与生效项目</summary>
+<div style="padding:0 0 16px;color:#616161;font-size:14px;">
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">注册表路径：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">project-registry.yaml</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">版本：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">1</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">本次冻结摘要：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">ccdd8b03261294a494f5a5892468ec425d40b03ec11a9ab50644d3f840bd0646</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">条目级错误：无</p>
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app</code></p><p style="margin:0;">名称：海信 IDS 应用<br>代码目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app</code><br>规范目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">standards/projects/hisense-ids-app</code><br>默认分支：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">projectDevGroup</code><br>仓库配置键名：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">PROJECT_HISENSE_IDS_APP_REPO_URL</code><br>启用：是</p></div>
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-spec</code></p><p style="margin:0;">名称：海信 IDS 应用-结构化分支<br>代码目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app-spec</code><br>规范目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">standards/projects/hisense-ids-app-spec</code><br>默认分支：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">projectDevGroup-specTemplate</code><br>仓库配置键名：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">PROJECT_HISENSE_IDS_APP_SPEC_REPO_URL</code><br>启用：是</p></div>
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-need</code></p><p style="margin:0;">名称：海信 IDS 应用-需求全链路分支<br>代码目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app-need</code><br>规范目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">standards/projects/hisense-ids-app-need</code><br>默认分支：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">features-DDCP-8746</code><br>仓库配置键名：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">PROJECT_HISENSE_IDS_APP_NEED_REPO_URL</code><br>启用：是</p></div>
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-function</code></p><p style="margin:0;">名称：海信 IDS 应用-方法库<br>代码目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app-function</code><br>规范目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">standards/projects/hisense-ids-app-function</code><br>默认分支：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">features-DDCP-8522</code><br>仓库配置键名：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">PROJECT_HISENSE_IDS_APP_FUNCTION_REPO_URL</code><br>启用：是</p></div>
+</div>
+</details>
+
+<details open style="margin:0;border-top:1px solid #d9d9dd;">
+<summary style="padding:16px 0;color:#212121;font-size:18px;line-height:1.4;font-weight:500;cursor:default;">项目来源与实际提交</summary>
+<div style="padding:0 0 16px;color:#616161;font-size:14px;">
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app</code></p><p style="margin:0;">状态：成功<br>本地目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app</code><br>固定提交 SHA：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">c3b90876ec9460f005ebf9ec5a0cca6fbab2f986</code><br>说明：仓库已仅快进同步。</p></div>
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-spec</code></p><p style="margin:0;">状态：成功<br>本地目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app-spec</code><br>固定提交 SHA：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">5517ca5e0b2b9903b124ad1710327d1d5f0ab943</code><br>说明：仓库已仅快进同步。</p></div>
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-need</code></p><p style="margin:0;">状态：成功<br>本地目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app-need</code><br>固定提交 SHA：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">3d514d6a9d16fc0d566d87552a7cf4437994963b</code><br>说明：仓库已仅快进同步。</p></div>
+<div style="margin:0;padding:12px 0;border-top:1px solid #e5e7eb;"><p style="margin:0 0 6px;color:#212121;font-size:16px;">项目 ID：<code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-function</code></p><p style="margin:0;">状态：成功<br>本地目录：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">data/code/hisense-ids-app-function</code><br>固定提交 SHA：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">1461b36e5583bdc50327b9099d25f853b8a776db</code><br>说明：仓库已是最新状态。</p></div>
+<h3 style="margin:16px 0 0;padding:8px 0;color:#212121;font-size:16px;line-height:1.5;font-weight:500;"><code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app</code></h3>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">c1113bf97ecb985bc3b1b65b91fbfd6a2366f13c</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">e982d32d96b458dfe97b12bf9f6b328686df69a1</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">8df8951119ef14e3b508f83229586b1d7b1f6fff</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">eaff2ddb6a86e97d69a2c126cc4e770df2da8372</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">2f8ebd0c948ec26500e7a3628bd5a1741c0d605e</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">251f083393621222ddece0310e36035e845e68a3</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">3baeb424991759000bba632ad2a7dae79290b4c3</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">e9e0d824ff548a12c068f5b8298414942b361d46</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">8682b4931e90596ea1854f44c27b28bae6417ea7</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">f59e37bb18acb42c73ecafb7d80efbaf17306cd6</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">f0433f8aeaad9f69cbf35c53dd13c0f37c3f54ea</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">c3b90876ec9460f005ebf9ec5a0cca6fbab2f986</code></p>
+<h3 style="margin:16px 0 0;padding:8px 0;color:#212121;font-size:16px;line-height:1.5;font-weight:500;"><code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-spec</code></h3>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">c1113bf97ecb985bc3b1b65b91fbfd6a2366f13c</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">e982d32d96b458dfe97b12bf9f6b328686df69a1</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">8df8951119ef14e3b508f83229586b1d7b1f6fff</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">eaff2ddb6a86e97d69a2c126cc4e770df2da8372</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">2f8ebd0c948ec26500e7a3628bd5a1741c0d605e</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">251f083393621222ddece0310e36035e845e68a3</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">3baeb424991759000bba632ad2a7dae79290b4c3</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">e9e0d824ff548a12c068f5b8298414942b361d46</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">8682b4931e90596ea1854f44c27b28bae6417ea7</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">82154ffe7f231afaef2984c43502f1a950e2dd59</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;overflow-wrap:anywhere;word-break:break-all;">f59e37bb18acb42c73ecafb7d80efbaf17306cd6</code></p>
+<h3 style="margin:16px 0 0;padding:8px 0;color:#212121;font-size:16px;line-height:1.5;font-weight:500;"><code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-need</code></h3>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">该用户范围内无提交。</p>
+<h3 style="margin:16px 0 0;padding:8px 0;color:#212121;font-size:16px;line-height:1.5;font-weight:500;"><code style="font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-function</code></h3>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">范围内无提交。</p>
+</div>
+</details>
+
+<details open style="margin:0;border-top:1px solid #d9d9dd;border-bottom:1px solid #d9d9dd;">
+<summary style="padding:16px 0;color:#212121;font-size:18px;line-height:1.4;font-weight:500;cursor:default;">规范加载与失败</summary>
+<div style="padding:0 0 16px;color:#616161;font-size:14px;">
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">规范加载顺序：<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">standards/common/</code>，随后加载各项目注册的 <code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">standards_dir</code></p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">规范冲突或降级：无；项目规则均为公共规则的补充</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">注册表、同步、身份解析和规范读取均无失败。</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;"><code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-need</code> 中该用户范围内无提交；<code style="color:#212121;font-family:Arial,ui-sans-serif,system-ui,sans-serif;">hisense-ids-app-function</code> 整体范围内无提交。</p>
+<p style="margin:0;padding:8px 0;border-top:1px solid #e5e7eb;">除上述发现外，未生成证据不足的推测性结论。</p>
+</div>
+</details>
+
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>

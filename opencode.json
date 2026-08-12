@@ -11,6 +11,7 @@
   "lsp": false,
   "permission": {
     "*": "deny",
+    "task": "allow",
     "read": {
       "*": "deny",
       "AGENTS.md": "allow",
